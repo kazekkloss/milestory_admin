@@ -19,7 +19,7 @@ class CustomTheme {
     outlinedButtonTheme: CustomOutlinedButtonTheme.elevatedButtonTheme,
     inputDecorationTheme: CustomInputDecorationTheme.inputDecotationTheme,
     tabBarTheme: CustomTabBarTheme.tabBarTheme,
-    bottomNavigationBarTheme: CustomNavBarTheme.navBarTheme,
+    navigationRailTheme: CustomNavRailTheme.navRailTheme,
     floatingActionButtonTheme: CustomFloatingActionButtonTheme.elevatedButtonTheme,
     drawerTheme: CustomDrawerTheme.drawerTheme,
     iconTheme: const IconThemeData(color: Colors.black),

@@ -2,8 +2,8 @@
 
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RouterRefreshBloc<BLOC extends BlocBase<STATE>, STATE> extends ChangeNotifier {
   RouterRefreshBloc(BLOC bloc) {

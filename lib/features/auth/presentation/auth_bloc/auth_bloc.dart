@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/core_export.dart';
@@ -10,30 +10,17 @@ part 'auth_state.dart';
 
 @injectable
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _authRepository;
-  AuthBloc({required AuthRepository authRepository})
-      : _authRepository = authRepository,
-        super(const AuthState.unknown()) {
-    on<SignUpEvent>(_signUpEventToState);
+  final SignIn _signIn;
+  final CheckAuth _checkAuth;
+  final Logout _logout;
+  AuthBloc({required SignIn signIn, required CheckAuth checkAuth, required Logout logout})
+    : _signIn = signIn,
+      _checkAuth = checkAuth,
+      _logout = logout,
+      super(const AuthState.unknown()) {
     on<SignInEvent>(_signInEventToState);
     on<CheckAuthEvent>(_checkAuthToState);
     on<LogoutEvent>(_logoutToState);
-  }
-
-  void _signUpEventToState(SignUpEvent event, Emitter<AuthState> emit) async {
-    try {
-      if (state.error != null) {
-        emit(state.copyWith(error: null));
-      }
-      final response = await SignUp(_authRepository).call(email: event.email, password: event.password);
-      if (response is DataSuccess) {
-      } else {
-        emit(state.copyWith(
-            error: AppError(apiError: ApiError(code: -1, message: "Uytkownik został utworzony, potwierdź adres mailowy i zaloguj się na konto"))));
-      }
-    } catch (e) {
-      emit(state.copyWith(error: AppError(apiError: ApiError(code: -1, message: e.toString()))));
-    }
   }
 
   void _signInEventToState(SignInEvent event, Emitter<AuthState> emit) async {
@@ -41,10 +28,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (state.error != null) {
         emit(state.copyWith(error: null));
       }
-      final response = await SignIn(_authRepository).call(email: event.email, password: event.password);
+      final response = await _signIn.call(email: event.email, password: event.password);
       if (response is DataSuccess) {
         if (response.data!.verify == true) {
-          emit(AuthState.authenticated(response.data!));
+          if (response.data!.role == "A") {
+            emit(AuthState.authenticated(response.data!));
+          } else {
+            emit(state.copyWith(error: AppError(apiError: ApiError(code: -1, message: "Ne posiadasz uprawnień aby się zalogować"))));
+          }
         } else {
           emit(state.copyWith(error: AppError(apiError: ApiError(code: -1, message: "Potwierdź konto przez otrzymaną wiadomość"))));
         }
@@ -62,7 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (state.error != null) {
         emit(state.copyWith(error: null));
       }
-      final response = await CheckAuth(_authRepository).call();
+      final response = await _checkAuth.call();
       if (response is DataSuccess) {
         if (response.data!.verify == true) {
           emit(AuthState.authenticated(response.data!));
@@ -82,7 +73,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (state.error != null) {
         emit(state.copyWith(error: null));
       }
-      final response = await Logout(_authRepository).call();
+      final response = await _logout.call(event.isLocal);
       if (response is DataSuccess) {
         emit(const AuthState.unauthenticated());
       } else {

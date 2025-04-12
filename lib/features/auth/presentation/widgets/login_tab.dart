@@ -1,8 +1,6 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/core_export.dart';
 import '../auth_bloc/auth_bloc.dart';
@@ -20,6 +18,13 @@ class _LoginTabState extends State<LoginTab> {
   final _signInFormKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    _emailController.text = "kazekkloss.kr@gmail.com";
+    _passwordController.text = "Chujwdupe4!";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +77,6 @@ class _LoginTabState extends State<LoginTab> {
                   return null;
                 },
               ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 320),
-                child: Row(children: [
-                  TextButton(onPressed: () {}, child: const Text("Zapomniałem hasła")),
-                  const SizedBox(width: 48, height: 48),
-                ]),
-              ),
               const SizedBox(height: 10),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
@@ -94,60 +92,9 @@ class _LoginTabState extends State<LoginTab> {
                         text: "Zaloguj się",
                         isLoading: state.loading,
                       ),
-                      Text("lub", style: Theme.of(context).textTheme.labelMedium),
-                      SizedBox(
-                        width: 193,
-                        child: WhiteButton(
-                          onPressed: () {
-                            //context.read<AuthBloc>().add(GoogleSignInEvent());
-                          },
-                          isLoading: state.googleLoading,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SvgPicture.asset('assets/svg/google_logo.svg', height: 20),
-                              const Text("Wejdź za pomocą Google"),
-                            ],
-                          ),
-                        ),
-                      )
                     ],
                   );
                 },
-              ),
-              const SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: Theme.of(context).textTheme.labelMedium,
-                    children: [
-                      const TextSpan(text: "Logując się wyrażasz zgodę na\n"),
-                      TextSpan(
-                        text: "Regulamin",
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            print("Otwieram regulamin");
-                          },
-                      ),
-                      const TextSpan(text: " oraz "),
-                      TextSpan(
-                        text: "Politykę prywatności",
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            print("Otwieram politykę prywatności");
-                          },
-                      ),
-                    ],
-                  ),
-                ),
               ),
               const SizedBox(height: 30),
             ],

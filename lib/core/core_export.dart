@@ -1,6 +1,8 @@
 export 'constants/api_constants.dart';
 export 'constants/error.dart';
 export 'constants/transport_mode.dart';
+export 'constants/entities/user_entity.dart';
+export 'constants/models/user_model.dart';
 
 export 'network/api_client.dart';
 export 'network/api_error.dart';
@@ -19,6 +21,7 @@ export 'utils/widgets/logo.dart';
 export 'utils/widgets/custom_elevated_button.dart';
 export 'utils/widgets/footer.dart';
 export 'utils/widgets/white_button.dart';
+export 'utils/widgets/logout_dialog.dart';
 
 //theme
 export 'theme/app_theme.dart';
@@ -37,7 +40,6 @@ export 'theme/expansipon_tile.dart';
 export 'theme/dialog.dart';
 export 'theme/list_tile.dart';
 export 'theme/snack_bar_theme.dart';
-
 
 // services
 export 'services/token/token_manager.dart';

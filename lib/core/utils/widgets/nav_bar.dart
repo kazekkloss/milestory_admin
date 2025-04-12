@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart';
+
+import '../../core_export.dart';
 
 class NavBar extends StatefulWidget {
   final Widget child;
@@ -22,7 +22,7 @@ class _NavBarState extends State<NavBar> {
       });
       context.go(widget.tabs[index].initialLocation);
     } else {
-      context.read<AuthBloc>().add(LogoutEvent());
+      showLogoutConfirmationDialog(context);
     }
   }
 
@@ -31,16 +31,14 @@ class _NavBarState extends State<NavBar> {
     return Scaffold(
       body: Row(
         children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: _onDestinationSelected,
-            labelType: NavigationRailLabelType.all,
-            destinations: widget.tabs
-                .map((tab) => NavigationRailDestination(
-                      icon: tab.icon,
-                      label: Text(tab.label ?? ''),
-                    ))
-                .toList(),
+          Container(
+            decoration: const BoxDecoration(border: Border(right: BorderSide(color: Color.fromARGB(255, 49, 49, 49), width: 1.0))),
+            child: NavigationRail(
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: _onDestinationSelected,
+              labelType: NavigationRailLabelType.all,
+              destinations: widget.tabs.map((tab) => NavigationRailDestination(icon: tab.icon, label: Text(tab.label ?? ''))).toList(),
+            ),
           ),
           Expanded(child: widget.child),
         ],

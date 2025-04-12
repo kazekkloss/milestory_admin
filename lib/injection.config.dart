@@ -22,8 +22,24 @@ import 'package:milestory_crm/features/auth/data/repository/auth_repository_impl
     as _i721;
 import 'package:milestory_crm/features/auth/domain/repository/auth_repository.dart'
     as _i55;
+import 'package:milestory_crm/features/auth/domain/usecases/check_auth.dart'
+    as _i580;
+import 'package:milestory_crm/features/auth/domain/usecases/logout.dart'
+    as _i717;
+import 'package:milestory_crm/features/auth/domain/usecases/sign_in.dart'
+    as _i142;
 import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart'
     as _i732;
+import 'package:milestory_crm/features/user_management/data/datasources/users_data_sources.dart'
+    as _i455;
+import 'package:milestory_crm/features/user_management/data/repository/users_repository_impl.dart'
+    as _i933;
+import 'package:milestory_crm/features/user_management/domain/usecases/get_users.dart'
+    as _i353;
+import 'package:milestory_crm/features/user_management/presentation/users_bloc/users_bloc.dart'
+    as _i26;
+import 'package:milestory_crm/features/user_management/users_export.dart'
+    as _i865;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -39,18 +55,48 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i415.ApiClient>(
       () => _i415.ApiClient(gh<_i361.Dio>(), gh<_i937.TokenManager>()),
     );
+    gh.lazySingleton<_i455.UsersDataSource>(
+      () => _i455.UsersDataSourceImpl(
+        gh<_i937.ApiClient>(),
+        gh<_i937.TokenManager>(),
+      ),
+    );
+    gh.lazySingleton<_i865.UsersRepository>(
+      () => _i933.UsersRepositoryImpl(
+        usersDataSource: gh<_i865.UsersDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i359.AuthDataSource>(
       () => _i359.AuthDataSourceImpl(
         gh<_i937.ApiClient>(),
         gh<_i937.TokenManager>(),
       ),
     );
+    gh.lazySingleton<_i353.GetUsers>(
+      () => _i353.GetUsers(gh<_i865.UsersRepository>()),
+    );
     gh.lazySingleton<_i55.AuthRepository>(
       () =>
           _i721.AuthRepositoryImpl(authDataSource: gh<_i359.AuthDataSource>()),
     );
+    gh.lazySingleton<_i580.CheckAuth>(
+      () => _i580.CheckAuth(gh<_i55.AuthRepository>()),
+    );
+    gh.lazySingleton<_i717.Logout>(
+      () => _i717.Logout(gh<_i55.AuthRepository>()),
+    );
+    gh.lazySingleton<_i142.SignIn>(
+      () => _i142.SignIn(gh<_i55.AuthRepository>()),
+    );
+    gh.factory<_i26.UsersBloc>(
+      () => _i26.UsersBloc(getUsers: gh<_i865.GetUsers>()),
+    );
     gh.factory<_i732.AuthBloc>(
-      () => _i732.AuthBloc(authRepository: gh<_i290.AuthRepository>()),
+      () => _i732.AuthBloc(
+        signIn: gh<_i290.SignIn>(),
+        checkAuth: gh<_i290.CheckAuth>(),
+        logout: gh<_i290.Logout>(),
+      ),
     );
     return this;
   }

@@ -8,6 +8,10 @@ class ApiConstants {
   static const String signUp = '$baseUrl/sign-up';
   static const String signIn = '$baseUrl/sign-in';
   static const String checkAuth = '$baseUrl/check-auth';
+  static const String logout = '$baseUrl/logout';
+
+  // USERS
+  static const String getUsers = '$baseUrl/get-users';
 
   // IMAGE / AUDIO
   static const String saveAudio = '$baseUrl/save-audio';

@@ -31,8 +31,9 @@ class CheckAuthEvent extends AuthEvent {
 }
 
 class LogoutEvent extends AuthEvent {
-  LogoutEvent();
+  final bool isLocal;
+  LogoutEvent({required this.isLocal});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [isLocal];
 }

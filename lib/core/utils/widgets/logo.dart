@@ -24,7 +24,7 @@ class LogoWidget extends StatelessWidget {
           ),
         ),
         const Text(
-          "  Creator",
+          "  CRM Admin",
           style: TextStyle(
             fontFamily: "Tajawal",
             fontSize: 15,

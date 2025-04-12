@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 
-class CustomNavBarTheme {
-  CustomNavBarTheme._();
+import '../core_export.dart';
 
-  static const navBarTheme = BottomNavigationBarThemeData(
-    backgroundColor: Colors.transparent,
-    showSelectedLabels: false,
-    showUnselectedLabels: false,
-    selectedIconTheme: IconThemeData(size: 30),
-    unselectedIconTheme: IconThemeData(size: 20),
+class CustomNavRailTheme {
+  CustomNavRailTheme._();
+
+  static final navRailTheme = NavigationRailThemeData(
+    backgroundColor: CustomColorScheme.customColorScheme.onPrimary,
+    selectedIconTheme: IconThemeData(
+      color: CustomColorScheme.customColorScheme.primary,
+      size: 35,
+    ),
+    unselectedIconTheme: IconThemeData(
+      color: CustomColorScheme.customColorScheme.onSurface,
+    ),
+    selectedLabelTextStyle: TextStyle(
+      color: CustomColorScheme.customColorScheme.primary,
+    ),
+    unselectedLabelTextStyle: TextStyle(
+      color: CustomColorScheme.customColorScheme.onSurface,
+    ),
+    indicatorColor: Colors.transparent,
   );
 }

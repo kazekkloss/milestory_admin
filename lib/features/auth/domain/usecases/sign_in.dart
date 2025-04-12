@@ -1,7 +1,9 @@
-import 'package:milestory_crm/core/response/response.dart';
-import '../entities/user_entity.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../../core/core_export.dart';
 import '../repository/auth_repository.dart';
 
+@lazySingleton
 class SignIn {
   final AuthRepository repository;
 

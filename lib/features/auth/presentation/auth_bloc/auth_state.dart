@@ -11,14 +11,12 @@ class AuthState extends Equatable {
   final AuthStatus status;
   final User user;
   final bool loading;
-  final bool googleLoading;
 
   const AuthState({
     required this.user,
     required this.status,
     this.error,
     this.loading = false,
-    this.googleLoading = false,
   });
 
   const AuthState._({
@@ -26,7 +24,6 @@ class AuthState extends Equatable {
     this.user = User.empty,
     this.error,
     this.loading = false,
-    this.googleLoading = false,
   });
 
   const AuthState.unknown() : this._();
@@ -47,10 +44,9 @@ class AuthState extends Equatable {
       status: status ?? this.status,
       error: error,
       loading: loading ?? this.loading,
-      googleLoading: googleLoading ?? this.googleLoading,
     );
   }
 
   @override
-  List<Object?> get props => [status, user, error, loading, googleLoading];
+  List<Object?> get props => [status, user, error, loading];
 }

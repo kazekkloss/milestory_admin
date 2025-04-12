@@ -1,14 +1,12 @@
 import 'package:injectable/injectable.dart';
-import 'package:milestory_crm/features/auth/data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/core_export.dart';
 
 abstract class AuthDataSource {
-  Future<DataState<UserModel>> signUp({required String email, required String password});
   Future<DataState<UserModel>> signIn({required String email, required String password});
   Future<DataState<UserModel>> checkAuth();
-  Future<DataState> logout();
+  Future<DataState> logout(bool isLocal);
 }
 
 @LazySingleton(as: AuthDataSource)
@@ -31,25 +29,6 @@ class AuthDataSourceImpl implements AuthDataSource {
 
     await tokenManager.setAccessToken(accessToken);
     await tokenManager.setRefreshToken(refreshToken);
-  }
-
-  @override
-  Future<DataState<UserModel>> signUp({required String email, required String password}) async {
-    try {
-      final response = await apiClient.request(
-        url: ApiConstants.signUp,
-        method: RequestMethod.post,
-        data: {'email': email, 'password': password},
-      );
-      if (response is DataSuccess) {
-        final userModel = UserModel.fromJson(response.data);
-        return DataSuccess(userModel);
-      } else {
-        return DataFailed(response.error!);
-      }
-    } catch (e) {
-      return DataFailed(AppError(message: 'Unexpected error: ${e.toString()}'));
-    }
   }
 
   @override
@@ -103,17 +82,32 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<DataState> logout() async {
+  Future<DataState> logout(bool isLocal) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      if (!prefs.containsKey('token')) {
-        return const DataFailed(AppError(message: 'Token not found'));
+      // Wykonaj wylogowanie z backendu, jeśli nie jest to tylko lokalne
+      if (!isLocal) {
+        final response = await apiClient.request(
+          url: ApiConstants.logout,
+          method: RequestMethod.delete,
+        );
+
+        print("WYLOGOWYWANIE ===========================================");
+        if (response is! DataSuccess) {
+          // Jeśli backend zwróci błąd, zdecyduj, co robić
+          if (response.error?.apiError?.code == 403) {
+            print("403 Forbidden during logout. Falling back to local logout...");
+          } else {
+            return DataFailed(response.error!);
+          }
+        }
+      } else {
+        print("Local logout only ===========================================");
       }
 
-      await prefs.remove('token');
+      await tokenManager.clearTokens();
       return const DataSuccess();
     } catch (e) {
-      return DataFailed(AppError(message: 'Unexpected error: ${e.toString()}'));
+      return DataFailed(AppError(message: e.toString()));
     }
   }
 }
