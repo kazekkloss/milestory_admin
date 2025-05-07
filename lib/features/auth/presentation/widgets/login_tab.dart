@@ -21,7 +21,12 @@ class _LoginTabState extends State<LoginTab> {
 
   @override
   void initState() {
+    // na local
     _emailController.text = "kazekkloss.kr@gmail.com";
+
+    // na global
+    //_emailController.text = "test@admin.com";
+
     _passwordController.text = "Chujwdupe4!";
     super.initState();
   }
@@ -31,19 +36,11 @@ class _LoginTabState extends State<LoginTab> {
     return Form(
       key: _signInFormKey,
       child: AppContainer(
-        //width: 90.w,
-        //height: 70.h,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Text(
-                  "Logowanie",
-                  style: Theme.of(context).textTheme.titleMedium!,
-                ),
-              ),
+              Padding(padding: const EdgeInsets.symmetric(vertical: 30), child: Text("Logowanie", style: Theme.of(context).textTheme.titleMedium!)),
               AppTextFormField(
                 descriptionText: "email",
                 hintText: "kowalski@example.com",
@@ -64,12 +61,13 @@ class _LoginTabState extends State<LoginTab> {
                 obscureText: _obscurePassword,
                 hintText: "••••••••",
                 suffixIcon: TextButton(
-                    child: _obscurePassword ? const Text("pokaż") : const Text("ukryj"),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    }),
+                  child: _obscurePassword ? const Text("pokaż") : const Text("ukryj"),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Pole nie może być puste';

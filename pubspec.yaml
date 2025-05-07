@@ -47,6 +47,7 @@ dependencies:
   email_validator: ^3.0.0
   font_awesome_flutter: ^10.8.0
   bloc: ^9.0.0
+  flutter_typeahead: ^5.2.0
 
 dev_dependencies:
   flutter_test:

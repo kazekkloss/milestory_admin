@@ -28,6 +28,7 @@ class CustomTheme {
     dialogTheme: CustomDialogTheme.dialogTheme,
     listTileTheme: CustomListTileTheme.listTile,
     snackBarTheme: CustomSnackBarTheme.snackBarTheme,
+    dropdownMenuTheme: CustomDropdownMenuTheme.dropdownMenuTheme,
   );
 
   // // this theme is only for license screen

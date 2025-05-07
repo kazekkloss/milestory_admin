@@ -26,55 +26,54 @@ class AppRouter {
   ];
 
   GoRouter _router() => GoRouter(
-          navigatorKey: _rootNavigatorKey,
-          redirect: (context, state) {
-            var authState = context.read<AuthBloc>().state;
-            switch (authState.status) {
-              case AuthStatus.unknown:
-                return state.namedLocation(RouteConstants.auth);
-              case AuthStatus.unauthenticated:
-                if (previousStatus != authState.status) {
-                  previousStatus = authState.status;
-                  return state.namedLocation(RouteConstants.auth);
-                }
-              case AuthStatus.authenticated:
-                if (previousStatus != authState.status) {
-                  previousStatus = authState.status;
-                  return state.namedLocation(RouteConstants.home);
-                }
-            }
-            return null;
-          },
-          refreshListenable: RouterRefreshBloc<AuthBloc, AuthState>(BlocProvider.of<AuthBloc>(context, listen: false)),
-          routes: [
-            GoRoute(parentNavigatorKey: _rootNavigatorKey, name: RouteConstants.auth, path: '/auth', builder: (context, state) => const AuthPage()),
-            ShellRoute(
-              navigatorKey: _shellNavigatorKey,
-              builder: (context, state, child) {
-                return NavBar(
-                  tabs: tabs,
-                  child: child,
-                );
-              },
-              routes: [
-                GoRoute(
-                  name: RouteConstants.home,
-                  path: '/home',
-                  pageBuilder: (context, state) => NoTransitionPage(child: const HomePage(), key: state.pageKey),
-                ),
-                GoRoute(
-                  name: RouteConstants.userManagement,
-                  path: '/user_management',
-                  pageBuilder: (context, state) => NoTransitionPage(child: const UserManagementPage(), key: state.pageKey),
-                ),
-                GoRoute(
-                  name: RouteConstants.roadManagement,
-                  path: '/road_management',
-                  pageBuilder: (context, state) => NoTransitionPage(child: const RoadManagementPage(), key: state.pageKey),
-                ),
-              ],
-            ),
-          ]);
+    navigatorKey: _rootNavigatorKey,
+    redirect: (context, state) {
+      print(previousStatus);
+      var authState = context.read<AuthBloc>().state;
+      switch (authState.status) {
+        case AuthStatus.unknown:
+          return state.namedLocation(RouteConstants.auth);
+        case AuthStatus.unauthenticated:
+          if (previousStatus != authState.status) {
+            previousStatus = authState.status;
+            return state.namedLocation(RouteConstants.auth);
+          }
+        case AuthStatus.authenticated:
+          if (previousStatus != authState.status) {
+            previousStatus = authState.status;
+            return state.namedLocation(RouteConstants.home);
+          }
+      }
+      return null;
+    },
+    refreshListenable: RouterRefreshBloc<AuthBloc, AuthState>(BlocProvider.of<AuthBloc>(context, listen: false)),
+    routes: [
+      GoRoute(parentNavigatorKey: _rootNavigatorKey, name: RouteConstants.auth, path: '/auth', builder: (context, state) => const AuthPage()),
+      ShellRoute(
+        navigatorKey: _shellNavigatorKey,
+        builder: (context, state, child) {
+          return NavBar(tabs: tabs, child: child);
+        },
+        routes: [
+          GoRoute(
+            name: RouteConstants.home,
+            path: '/home',
+            pageBuilder: (context, state) => NoTransitionPage(child: const HomePage(), key: state.pageKey),
+          ),
+          GoRoute(
+            name: RouteConstants.userManagement,
+            path: '/user_management',
+            pageBuilder: (context, state) => NoTransitionPage(child: const UserManagementPage(), key: state.pageKey),
+          ),
+          GoRoute(
+            name: RouteConstants.roadManagement,
+            path: '/road_management',
+            pageBuilder: (context, state) => NoTransitionPage(child: const RoadManagementPage(), key: state.pageKey),
+          ),
+        ],
+      ),
+    ],
+  );
 
   GoRouter get router => _router();
 }

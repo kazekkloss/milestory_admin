@@ -17,11 +17,12 @@ class ApiClient {
     required String url,
     required RequestMethod method,
     Map<String, dynamic>? data,
+    Map<String, dynamic>? queryParameters,
     Uint8List? fileData,
     String? fileName,
   }) async {
     try {
-      Response response = await _performRequest(url, method, data, fileData, fileName);
+      Response response = await _performRequest(url, method, data, queryParameters, fileData, fileName);
       return DataSuccess(response.data);
     } on DioException catch (e) {
       // Obsługa błędu 401 - próba odświeżenia tokena
@@ -30,7 +31,7 @@ class ApiClient {
         if (refreshed) {
           // Ponowienie żądania po udanym odświeżeniu tokenów
           try {
-            Response response = await _performRequest(url, method, data, fileData, fileName);
+            Response response = await _performRequest(url, method, data, queryParameters, fileData, fileName);
             return DataSuccess(response.data);
           } on DioException catch (retryError) {
             // Jeśli ponowione żądanie też zawiedzie, zwracamy błąd
@@ -53,26 +54,24 @@ class ApiClient {
     String url,
     RequestMethod method,
     Map<String, dynamic>? data,
+    Map<String, dynamic>? queryParameters,
     Uint8List? fileData,
     String? fileName,
   ) async {
     switch (method) {
       case RequestMethod.post:
         if (data == null) throw ArgumentError('Data must be provided for POST requests');
-        return await _dio.post(url, data: data);
+        return await _dio.post(url, data: data, queryParameters: queryParameters);
       case RequestMethod.get:
-        return await _dio.get(url);
+        return await _dio.get(url, queryParameters: queryParameters);
       case RequestMethod.delete:
-        return await _dio.delete(url, data: data);
+        return await _dio.delete(url, data: data, queryParameters: queryParameters);
       case RequestMethod.streamTo:
         if (fileData == null || fileName == null) {
           throw ArgumentError('File data and file name must be provided for streamTo requests');
         }
-        FormData formData = FormData.fromMap({
-          ...?data,
-          'file': MultipartFile.fromBytes(fileData, filename: fileName),
-        });
-        return await _dio.post(url, data: formData);
+        FormData formData = FormData.fromMap({...?data, 'file': MultipartFile.fromBytes(fileData, filename: fileName)});
+        return await _dio.post(url, data: formData, queryParameters: queryParameters);
     }
   }
 }

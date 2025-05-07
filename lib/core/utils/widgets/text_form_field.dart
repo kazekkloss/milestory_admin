@@ -33,7 +33,7 @@ class AppTextFormField extends StatelessWidget {
             Text(descriptionText, style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: 3),
             TextFormField(
-              focusNode: focusNode,
+              focusNode: focusNode, 
               style: Theme.of(context).textTheme.bodySmall,
               controller: controller,
               validator: validator,

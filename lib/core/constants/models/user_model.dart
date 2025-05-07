@@ -28,4 +28,15 @@ class UserModel extends User {
       role: userModel.role,
     );
   }
+
+  static UserModel toModel(User userEntity) {
+    return UserModel(
+      id: userEntity.id,
+      email: userEntity.email,
+      password: userEntity.password,
+      name: userEntity.name,
+      verify: userEntity.verify,
+      role: userEntity.role,
+    );
+  }
 }

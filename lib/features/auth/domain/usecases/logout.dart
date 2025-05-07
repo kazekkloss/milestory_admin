@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:milestory_crm/core/response/response.dart';
+import '../../../../core/core_export.dart';
 import '../repository/auth_repository.dart';
 
 @lazySingleton
@@ -8,7 +8,7 @@ class Logout {
 
   Logout(this.repository);
 
-  Future<DataState> call(bool isLocal) async {
-    return await repository.logout(isLocal);
+  Future<DataState> call({required bool isLocal}) async {
+    return await repository.logout(isLocal: isLocal);
   }
 }

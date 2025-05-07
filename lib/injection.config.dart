@@ -34,8 +34,20 @@ import 'package:milestory_crm/features/user_management/data/datasources/users_da
     as _i455;
 import 'package:milestory_crm/features/user_management/data/repository/users_repository_impl.dart'
     as _i933;
+import 'package:milestory_crm/features/user_management/domain/repository/users_repository.dart'
+    as _i189;
+import 'package:milestory_crm/features/user_management/domain/usecases/delete_user.dart'
+    as _i188;
+import 'package:milestory_crm/features/user_management/domain/usecases/get_guide_applications.dart'
+    as _i185;
 import 'package:milestory_crm/features/user_management/domain/usecases/get_users.dart'
     as _i353;
+import 'package:milestory_crm/features/user_management/domain/usecases/logout_user.dart'
+    as _i523;
+import 'package:milestory_crm/features/user_management/domain/usecases/search_user.dart'
+    as _i297;
+import 'package:milestory_crm/features/user_management/domain/usecases/update_user.dart'
+    as _i909;
 import 'package:milestory_crm/features/user_management/presentation/users_bloc/users_bloc.dart'
     as _i26;
 import 'package:milestory_crm/features/user_management/users_export.dart'
@@ -75,6 +87,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i353.GetUsers>(
       () => _i353.GetUsers(gh<_i865.UsersRepository>()),
     );
+    gh.lazySingleton<_i523.LogoutUser>(
+      () => _i523.LogoutUser(gh<_i865.UsersRepository>()),
+    );
+    gh.lazySingleton<_i188.DeleteUser>(
+      () => _i188.DeleteUser(gh<_i865.UsersRepository>()),
+    );
+    gh.lazySingleton<_i185.GetGuideApplications>(
+      () => _i185.GetGuideApplications(gh<_i865.UsersRepository>()),
+    );
+    gh.lazySingleton<_i297.SearchUser>(
+      () => _i297.SearchUser(gh<_i189.UsersRepository>()),
+    );
+    gh.lazySingleton<_i909.UpdateUser>(
+      () => _i909.UpdateUser(gh<_i865.UsersRepository>()),
+    );
+    gh.factory<_i26.UsersBloc>(
+      () => _i26.UsersBloc(
+        getUsers: gh<_i865.GetUsers>(),
+        updateUser: gh<_i865.UpdateUser>(),
+        deleteUser: gh<_i865.DeleteUser>(),
+        logoutUser: gh<_i865.LogoutUser>(),
+        searchUser: gh<_i865.SearchUser>(),
+        getGuideApplications: gh<_i865.GetGuideApplications>(),
+      ),
+    );
     gh.lazySingleton<_i55.AuthRepository>(
       () =>
           _i721.AuthRepositoryImpl(authDataSource: gh<_i359.AuthDataSource>()),
@@ -87,9 +124,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i142.SignIn>(
       () => _i142.SignIn(gh<_i55.AuthRepository>()),
-    );
-    gh.factory<_i26.UsersBloc>(
-      () => _i26.UsersBloc(getUsers: gh<_i865.GetUsers>()),
     );
     gh.factory<_i732.AuthBloc>(
       () => _i732.AuthBloc(

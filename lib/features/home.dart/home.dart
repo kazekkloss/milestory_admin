@@ -10,17 +10,20 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        return Scaffold(body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text("Zalogowany jako admin ${state.user.name!}", style: Theme.of(context).textTheme.titleLarge)),
-              Expanded(child: Center(child: Text("Statystyki itp"),))
-            ],
+        return Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text("Zalogowany jako admin ${state.user.name ?? 'Brak imienia'}", style: Theme.of(context).textTheme.titleLarge),
+                ),
+                Expanded(child: Center(child: Text("Statystyki itp"))),
+              ],
+            ),
           ),
-        ));
+        );
       },
     );
   }

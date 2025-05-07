@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core_export.dart';
+import '../../users_export.dart';
 
 class TopTab extends StatefulWidget {
   const TopTab({super.key});
@@ -20,40 +22,80 @@ class _TopTabState extends State<TopTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      margin: EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Column(
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        return Container(
+          height: 150,
+          margin: EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Panel zarządzania użytkownikami", style: Theme.of(context).textTheme.titleLarge),
-                  SizedBox(height: 40),
-                  AppTextFormField(
-                    controller: _searchController,
-                    descriptionText: "wpisz nazwę",
-                    hintText: "np. Kraków Rynek",
-                    onChanged: (value) {
-                      //context.read<SearchBloc>().add(GetRoadsEvent(title: value));
-                    },
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.cancel_outlined, color: Color.fromARGB(160, 255, 255, 255)),
-                      onPressed: () {
-                        _searchController.clear();
-                        //context.read<SearchBloc>().add(GetRoadsEvent(title: _searchController.text));
-                      },
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Panel zarządzania użytkownikami", style: Theme.of(context).textTheme.titleLarge),
+                      SizedBox(height: 40),
+                      AppTextFormField(
+                        controller: _searchController,
+                        descriptionText: "wpisz nazwę użytkownika",
+                        hintText: "np. Kazimierz",
+                        onChanged: (value) {
+                          context.read<UsersBloc>().add(SearchUserEvent(name: value));
+                        },
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.cancel_outlined, color: Color.fromARGB(160, 255, 255, 255)),
+                          onPressed: () {
+                            _searchController.clear();
+                            context.read<UsersBloc>().add(SearchUserEvent(name: _searchController.text));
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
+              CustomElevatedButton(
+                onPressed: () {
+                  context.read<UsersBloc>().add(GetGuideApplicationsEvent());
+                },
+                text: "Test Przycisk",
+                isLoading: false,
+              ),
+              SizedBox(
+                width: 200,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Wszyscy:"),
+                        Text(state.stats?.totalUsers.toString() ?? "Ładowanie", style: Theme.of(context).textTheme.titleLarge),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Podróżnicy:"),
+                        Text(state.stats?.travelersCount.toString() ?? "Ładowanie", style: Theme.of(context).textTheme.titleLarge),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Przewodnicy:"),
+                        Text(state.stats?.guidesCount.toString() ?? "Ładowanie", style: Theme.of(context).textTheme.titleLarge),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -31,11 +31,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await _signIn.call(email: event.email, password: event.password);
       if (response is DataSuccess) {
         if (response.data!.verify == true) {
-          if (response.data!.role == "A") {
-            emit(AuthState.authenticated(response.data!));
-          } else {
-            emit(state.copyWith(error: AppError(apiError: ApiError(code: -1, message: "Ne posiadasz uprawnień aby się zalogować"))));
-          }
+          //if (response.data!.role == "A") {
+          emit(AuthState.authenticated(response.data!));
+          // } else {
+          //   emit(state.copyWith(error: AppError(apiError: ApiError(code: -1, message: "Ne posiadasz uprawnień aby się zalogować"))));
+          // }
         } else {
           emit(state.copyWith(error: AppError(apiError: ApiError(code: -1, message: "Potwierdź konto przez otrzymaną wiadomość"))));
         }
@@ -73,7 +73,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (state.error != null) {
         emit(state.copyWith(error: null));
       }
-      final response = await _logout.call(event.isLocal);
+      final response = await _logout.call(isLocal: event.isLocal);
       if (response is DataSuccess) {
         emit(const AuthState.unauthenticated());
       } else {

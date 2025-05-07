@@ -1,12 +1,10 @@
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../core/core_export.dart';
 
 abstract class AuthDataSource {
   Future<DataState<UserModel>> signIn({required String email, required String password});
   Future<DataState<UserModel>> checkAuth();
-  Future<DataState> logout(bool isLocal);
+  Future<DataState> logout({required bool isLocal});
 }
 
 @LazySingleton(as: AuthDataSource)
@@ -16,7 +14,7 @@ class AuthDataSourceImpl implements AuthDataSource {
 
   AuthDataSourceImpl(this.apiClient, this.tokenManager);
 
-    Future<void> _saveTokens(Map<String, dynamic> responseData) async {
+  Future<void> _saveTokens(Map<String, dynamic> responseData) async {
     final accessToken = responseData['accessToken'] as String?;
     final refreshToken = responseData['refreshToken'] as String?;
 
@@ -59,9 +57,9 @@ class AuthDataSourceImpl implements AuthDataSource {
   @override
   Future<DataState<UserModel>> checkAuth() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = tokenManager.accessToken;
       if (token == null || token.isEmpty) {
+        print("TOKEN ============================= ${token}");
         return const DataFailed(AppError(message: 'Token is missing'));
       }
 
@@ -77,14 +75,13 @@ class AuthDataSourceImpl implements AuthDataSource {
         return DataFailed(response.error!);
       }
     } catch (e) {
-      return DataFailed(AppError(message: 'Unexpected error: ${e.toString()}'));
+      return DataFailed(AppError(message: e.toString()));
     }
   }
 
   @override
-  Future<DataState> logout(bool isLocal) async {
+  Future<DataState> logout({required bool isLocal}) async {
     try {
-      // Wykonaj wylogowanie z backendu, jeśli nie jest to tylko lokalne
       if (!isLocal) {
         final response = await apiClient.request(
           url: ApiConstants.logout,
@@ -100,8 +97,6 @@ class AuthDataSourceImpl implements AuthDataSource {
             return DataFailed(response.error!);
           }
         }
-      } else {
-        print("Local logout only ===========================================");
       }
 
       await tokenManager.clearTokens();

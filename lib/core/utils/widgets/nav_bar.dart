@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:milestory_crm/features/auth/auth_export.dart';
 
 import '../../core_export.dart';
 
@@ -22,7 +24,12 @@ class _NavBarState extends State<NavBar> {
       });
       context.go(widget.tabs[index].initialLocation);
     } else {
-      showLogoutConfirmationDialog(context);
+      showConfirmationDialog(
+        context: context,
+        title: "Wylogowywanie",
+        content: "Czy na pewno chcesz się wylogować?",
+        onPressed: () => context.read<AuthBloc>().add(LogoutEvent(isLocal: false)),
+      );
     }
   }
 

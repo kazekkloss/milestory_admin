@@ -9,7 +9,11 @@ class GetUsers {
 
   GetUsers(this.repository);
 
-  Future<DataState<List<User>>> call() async {
-    return await repository.getUsers();
+  Future<DataState<UsersResponse>> call({
+    int page = 1,
+    String? role,
+    bool? verify,
+  }) async {
+    return await repository.getUsers(page: page, role: role, verify: verify);
   }
 }

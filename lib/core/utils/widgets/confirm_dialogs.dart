@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../features/auth/auth_export.dart';
-
-void showLogoutConfirmationDialog(BuildContext context) {
+void showConfirmationDialog({required BuildContext context, required String title, required String content, required void Function() onPressed}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         actionsAlignment: MainAxisAlignment.center,
-        title: const Text('Wylogowanie', textAlign: TextAlign.center),
-        content: Text('Czy na pewno chcesz się wylogować?', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
+        title: Text(title, textAlign: TextAlign.center),
+        content: Text(content, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
         actions: [
           ElevatedButton(
             onPressed: () {
@@ -21,7 +18,7 @@ void showLogoutConfirmationDialog(BuildContext context) {
           OutlinedButton(
             onPressed: () {
               Navigator.of(context).pop();
-              context.read<AuthBloc>().add(LogoutEvent(isLocal: false));
+              onPressed();
             },
             child: const Text('Tak'),
           ),

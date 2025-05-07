@@ -22,8 +22,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<DataState> logout(bool isLocal) async {
-    final response = await authDataSource.logout(isLocal);
+  Future<DataState> logout({required bool isLocal}) async {
+    final response = await authDataSource.logout(isLocal: isLocal);
     return response;
   }
 }
