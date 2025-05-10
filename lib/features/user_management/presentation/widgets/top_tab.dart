@@ -57,13 +57,6 @@ class _TopTabState extends State<TopTab> {
                   ),
                 ],
               ),
-              CustomElevatedButton(
-                onPressed: () {
-                  context.read<UsersBloc>().add(GetGuideApplicationsEvent());
-                },
-                text: "Test Przycisk",
-                isLoading: false,
-              ),
               SizedBox(
                 width: 200,
                 child: Column(

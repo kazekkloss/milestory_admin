@@ -30,6 +30,18 @@ import 'package:milestory_crm/features/auth/domain/usecases/sign_in.dart'
     as _i142;
 import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart'
     as _i732;
+import 'package:milestory_crm/features/guide_application_management/data/datasources/guide_application_data_sources.dart'
+    as _i641;
+import 'package:milestory_crm/features/guide_application_management/data/repository/guide_application_repository_impl.dart'
+    as _i49;
+import 'package:milestory_crm/features/guide_application_management/domain/usecases/delete_guide_application.dart'
+    as _i618;
+import 'package:milestory_crm/features/guide_application_management/domain/usecases/get_guide_applications.dart'
+    as _i506;
+import 'package:milestory_crm/features/guide_application_management/guide_application_export.dart'
+    as _i85;
+import 'package:milestory_crm/features/guide_application_management/presentation/guide_application_bloc/guide_application_bloc.dart'
+    as _i648;
 import 'package:milestory_crm/features/user_management/data/datasources/users_data_sources.dart'
     as _i455;
 import 'package:milestory_crm/features/user_management/data/repository/users_repository_impl.dart'
@@ -38,8 +50,6 @@ import 'package:milestory_crm/features/user_management/domain/repository/users_r
     as _i189;
 import 'package:milestory_crm/features/user_management/domain/usecases/delete_user.dart'
     as _i188;
-import 'package:milestory_crm/features/user_management/domain/usecases/get_guide_applications.dart'
-    as _i185;
 import 'package:milestory_crm/features/user_management/domain/usecases/get_users.dart'
     as _i353;
 import 'package:milestory_crm/features/user_management/domain/usecases/logout_user.dart'
@@ -78,10 +88,21 @@ extension GetItInjectableX on _i174.GetIt {
         usersDataSource: gh<_i865.UsersDataSource>(),
       ),
     );
+    gh.lazySingleton<_i641.GuideApplicationDataSource>(
+      () => _i641.UsersDataSourceImpl(
+        gh<_i937.ApiClient>(),
+        gh<_i937.TokenManager>(),
+      ),
+    );
     gh.lazySingleton<_i359.AuthDataSource>(
       () => _i359.AuthDataSourceImpl(
         gh<_i937.ApiClient>(),
         gh<_i937.TokenManager>(),
+      ),
+    );
+    gh.lazySingleton<_i85.GuideApplicationRepository>(
+      () => _i49.GuideApplicationRepositoryImpl(
+        guideApplicationDataSource: gh<_i85.GuideApplicationDataSource>(),
       ),
     );
     gh.lazySingleton<_i353.GetUsers>(
@@ -93,24 +114,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i188.DeleteUser>(
       () => _i188.DeleteUser(gh<_i865.UsersRepository>()),
     );
-    gh.lazySingleton<_i185.GetGuideApplications>(
-      () => _i185.GetGuideApplications(gh<_i865.UsersRepository>()),
-    );
     gh.lazySingleton<_i297.SearchUser>(
       () => _i297.SearchUser(gh<_i189.UsersRepository>()),
     );
     gh.lazySingleton<_i909.UpdateUser>(
       () => _i909.UpdateUser(gh<_i865.UsersRepository>()),
-    );
-    gh.factory<_i26.UsersBloc>(
-      () => _i26.UsersBloc(
-        getUsers: gh<_i865.GetUsers>(),
-        updateUser: gh<_i865.UpdateUser>(),
-        deleteUser: gh<_i865.DeleteUser>(),
-        logoutUser: gh<_i865.LogoutUser>(),
-        searchUser: gh<_i865.SearchUser>(),
-        getGuideApplications: gh<_i865.GetGuideApplications>(),
-      ),
     );
     gh.lazySingleton<_i55.AuthRepository>(
       () =>
@@ -125,11 +133,32 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i142.SignIn>(
       () => _i142.SignIn(gh<_i55.AuthRepository>()),
     );
+    gh.lazySingleton<_i618.DeleteGuideApplication>(
+      () => _i618.DeleteGuideApplication(gh<_i85.GuideApplicationRepository>()),
+    );
+    gh.lazySingleton<_i506.GetGuideApplications>(
+      () => _i506.GetGuideApplications(gh<_i85.GuideApplicationRepository>()),
+    );
+    gh.factory<_i26.UsersBloc>(
+      () => _i26.UsersBloc(
+        getUsers: gh<_i865.GetUsers>(),
+        updateUser: gh<_i865.UpdateUser>(),
+        deleteUser: gh<_i865.DeleteUser>(),
+        logoutUser: gh<_i865.LogoutUser>(),
+        searchUser: gh<_i865.SearchUser>(),
+      ),
+    );
     gh.factory<_i732.AuthBloc>(
       () => _i732.AuthBloc(
         signIn: gh<_i290.SignIn>(),
         checkAuth: gh<_i290.CheckAuth>(),
         logout: gh<_i290.Logout>(),
+      ),
+    );
+    gh.factory<_i648.GuideApplicationBloc>(
+      () => _i648.GuideApplicationBloc(
+        getGuideApplications: gh<_i85.GetGuideApplications>(),
+        deleteGuideApplication: gh<_i85.DeleteGuideApplication>(),
       ),
     );
     return this;

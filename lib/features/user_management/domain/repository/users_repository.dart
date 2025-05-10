@@ -7,5 +7,4 @@ abstract class UsersRepository {
   Future<DataState> deleteUser({required String userId});
   Future<DataState> logoutUser({required String userId});
   Future<DataState<List<User>>> searchUser({required String name});
-  Future<DataState<GuideApplicationResponse>> getGuideApplications({int page});
 }

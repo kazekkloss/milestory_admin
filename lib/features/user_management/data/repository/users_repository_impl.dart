@@ -48,15 +48,4 @@ class UsersRepositoryImpl implements UsersRepository {
       return response;
     }
   }
-
-  @override
-  Future<DataState<GuideApplicationResponse>> getGuideApplications({int page = 1}) async {
-    final response = await usersDataSource.getGuideApplications();
-    if (response is DataSuccess) {
-      GuideApplicationResponse guideApplicationResponse = GuideApplicationResponseModel.toEntity(response.data!);
-      return DataSuccess(guideApplicationResponse);
-    } else {
-      return response;
-    }
-  }
 }

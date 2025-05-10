@@ -1,8 +1,8 @@
-// questions_model.dart
-import '../../users_export.dart';
+import '../../guide_application_export.dart';
 
 class GuideApplicationModel extends GuideApplication {
   const GuideApplicationModel({
+    required super.id,
     super.userId,
     required super.firstName,
     required super.lastName,
@@ -14,20 +14,12 @@ class GuideApplicationModel extends GuideApplication {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'userId': userId,
-      'firstName': firstName,
-      'lastName': lastName,
-      'q1': q1,
-      'q2': q2,
-      'q3': q3,
-      'q4': q4,
-      'q5': q5,
-    };
+    return {'_id': id, 'userId': userId, 'firstName': firstName, 'lastName': lastName, 'q1': q1, 'q2': q2, 'q3': q3, 'q4': q4, 'q5': q5};
   }
 
   factory GuideApplicationModel.fromJson(Map<String, dynamic> json) {
     return GuideApplicationModel(
+      id: json['_id'],
       userId: json['userId'] as String?,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
@@ -41,6 +33,7 @@ class GuideApplicationModel extends GuideApplication {
 
   static GuideApplicationModel toModel(GuideApplication entity) {
     return GuideApplicationModel(
+      id: entity.id,
       userId: entity.userId,
       firstName: entity.firstName,
       lastName: entity.lastName,
@@ -54,6 +47,7 @@ class GuideApplicationModel extends GuideApplication {
 
   static GuideApplication toEntity(GuideApplicationModel model) {
     return GuideApplication(
+      id: model.id,
       userId: model.userId,
       firstName: model.firstName,
       lastName: model.lastName,

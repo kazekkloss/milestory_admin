@@ -15,9 +15,12 @@ class _UserListState extends State<UsersList> {
   String? _selectedRole;
   bool? _selectedVerify;
 
+  late UsersBloc _userBloc;
+
   @override
   void initState() {
-    context.read<UsersBloc>().add(GetUsersEvent(page: _currentPage));
+    _userBloc = context.read<UsersBloc>();
+    _userBloc.add(GetUsersEvent(page: _currentPage));
     super.initState();
   }
 
@@ -25,14 +28,14 @@ class _UserListState extends State<UsersList> {
     setState(() {
       _currentPage = 1;
     });
-    context.read<UsersBloc>().add(GetUsersEvent(page: _currentPage, role: _selectedRole, verify: _selectedVerify, isLoadMore: false));
+    _userBloc.add(GetUsersEvent(page: _currentPage, role: _selectedRole, verify: _selectedVerify, isLoadMore: false));
   }
 
   void _loadMore() {
     setState(() {
       _currentPage++;
     });
-    context.read<UsersBloc>().add(GetUsersEvent(page: _currentPage, role: _selectedRole, verify: _selectedVerify, isLoadMore: true));
+    _userBloc.add(GetUsersEvent(page: _currentPage, role: _selectedRole, verify: _selectedVerify, isLoadMore: true));
   }
 
   @override
@@ -98,7 +101,7 @@ class _UserListState extends State<UsersList> {
                               _selectedVerify = null;
                               _currentPage = 1;
                             });
-                            context.read<UsersBloc>().add(GetUsersEvent(page: _currentPage, isLoadMore: false));
+                            _userBloc.add(GetUsersEvent(page: _currentPage, isLoadMore: false));
                           },
                           icon: const Icon(Icons.refresh, color: Colors.white),
                         ),

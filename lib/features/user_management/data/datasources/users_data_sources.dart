@@ -8,7 +8,6 @@ abstract class UsersDataSource {
   Future<DataState> deleteUser({required String userId});
   Future<DataState> logoutUser({required String userId});
   Future<DataState<List<UserModel>>> searchUser({required String name});
-  Future<DataState<GuideApplicationResponseModel>> getGuideApplications({int page});
 }
 
 @LazySingleton(as: UsersDataSource)
@@ -87,22 +86,6 @@ class UsersDataSourceImpl implements UsersDataSource {
       if (response is DataSuccess) {
         List<UserModel> users = (response.data as List).map((user) => UserModel.fromJson(user)).toList();
         return DataSuccess(users);
-      } else {
-        return DataFailed(response.error!);
-      }
-    } catch (e) {
-      return DataFailed(AppError(message: e.toString()));
-    }
-  }
-
-  @override
-  Future<DataState<GuideApplicationResponseModel>> getGuideApplications({int page = 1}) async {
-    try {
-      final response = await apiClient.request(url: ApiConstants.getGuideApplications, method: RequestMethod.get);
-
-      if (response is DataSuccess) {
-        final guideApplicationResponse = GuideApplicationResponseModel.fromJson(response.data);
-        return DataSuccess(guideApplicationResponse);
       } else {
         return DataFailed(response.error!);
       }

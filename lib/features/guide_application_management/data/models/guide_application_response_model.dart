@@ -1,4 +1,4 @@
-import '../../users_export.dart';
+import '../../guide_application_export.dart';
 
 class GuideApplicationResponseModel extends GuideApplicationResponse {
   const GuideApplicationResponseModel({

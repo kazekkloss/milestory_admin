@@ -3,8 +3,6 @@ part of 'users_bloc.dart';
 class UsersState extends Equatable {
   final List<User> userList;
   final List<User> searchUserList;
-  final List<GuideApplication> guideApplicationList;
-  final bool getGuideApplicationsLoading;
   final User? selectedUser;
   final AppError? error;
   final UsersStats? stats;
@@ -17,8 +15,6 @@ class UsersState extends Equatable {
   const UsersState({
     required this.userList,
     required this.searchUserList,
-    required this.guideApplicationList,
-    this.getGuideApplicationsLoading = false,
     this.error,
     this.selectedUser = User.empty,
     this.stats,
@@ -32,11 +28,9 @@ class UsersState extends Equatable {
   UsersState copyWith({
     List<User>? userList,
     List<User>? searchUserList,
-    List<GuideApplication>? guideApplicationList,
     AppError? error,
     User? selectedUser,
     UsersStats? stats,
-    bool? getGuideApplicationsLoading,
     bool? getUsersLoading,
     bool? editUserLoading,
     bool? deleteUserLoading,
@@ -44,13 +38,11 @@ class UsersState extends Equatable {
     bool? searchUserLoading,
   }) {
     return UsersState(
-      guideApplicationList: guideApplicationList ?? this.guideApplicationList,
       searchUserList: searchUserList ?? this.searchUserList,
       userList: userList ?? this.userList,
       error: error,
       selectedUser: selectedUser ?? this.selectedUser,
       stats: stats ?? this.stats,
-      getGuideApplicationsLoading: getGuideApplicationsLoading ?? this.getGuideApplicationsLoading,
       getUsersLoading: getUsersLoading ?? this.getUsersLoading,
       editUserLoading: editUserLoading ?? this.editUserLoading,
       deleteUserLoading: deleteUserLoading ?? this.deleteUserLoading,
@@ -61,8 +53,6 @@ class UsersState extends Equatable {
 
   @override
   List<Object?> get props => [
-    getGuideApplicationsLoading,
-    guideApplicationList,
     searchUserList,
     userList,
     selectedUser,

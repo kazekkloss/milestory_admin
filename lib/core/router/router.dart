@@ -8,6 +8,7 @@ import 'package:milestory_crm/features/home.dart/home.dart';
 import 'package:milestory_crm/features/road_management/presentation/road_management_page.dart';
 import 'package:milestory_crm/features/user_management/presentation/screen/user_page.dart';
 
+import '../../features/guide_application_management/guide_application_export.dart';
 import '../core_export.dart';
 import '../utils/widgets/nav_bar.dart';
 
@@ -19,16 +20,16 @@ class AppRouter {
   late AuthStatus previousStatus = AuthStatus.unknown;
 
   final tabs = const [
-    NavBarItem(initialLocation: '/home', icon: Icon(Icons.home), label: ""),
-    NavBarItem(initialLocation: '/user_management', icon: Icon(Icons.person), label: ""),
+    NavBarItem(initialLocation: '/home', icon: Icon(FontAwesomeIcons.house), label: ""),
+    NavBarItem(initialLocation: '/user_management', icon: Icon(FontAwesomeIcons.user), label: ""),
+    NavBarItem(initialLocation: '/guide_application_management', icon: Icon(FontAwesomeIcons.message), label: ""),
     NavBarItem(initialLocation: '/road_management', icon: Icon(FontAwesomeIcons.map), label: ""),
-    NavBarItem(initialLocation: '', icon: Icon(Icons.logout), label: ""),
+    NavBarItem(initialLocation: '', icon: Icon(FontAwesomeIcons.rightFromBracket), label: ""),
   ];
 
   GoRouter _router() => GoRouter(
     navigatorKey: _rootNavigatorKey,
     redirect: (context, state) {
-      print(previousStatus);
       var authState = context.read<AuthBloc>().state;
       switch (authState.status) {
         case AuthStatus.unknown:
@@ -64,6 +65,11 @@ class AppRouter {
             name: RouteConstants.userManagement,
             path: '/user_management',
             pageBuilder: (context, state) => NoTransitionPage(child: const UserManagementPage(), key: state.pageKey),
+          ),
+          GoRoute(
+            name: RouteConstants.guideApplication,
+            path: '/guide_application_management',
+            pageBuilder: (context, state) => NoTransitionPage(child: const GuideApplicationManagementPage(), key: state.pageKey),
           ),
           GoRoute(
             name: RouteConstants.roadManagement,

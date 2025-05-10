@@ -15,7 +15,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   final DeleteUser _deleteUser;
   final LogoutUser _logoutUser;
   final SearchUser _searchUser;
-  final GetGuideApplications _getGuideApplications;
   UsersStats? _cachedStats;
   static const int _maxUsersInMemory = 100;
 
@@ -25,21 +24,18 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     required DeleteUser deleteUser,
     required LogoutUser logoutUser,
     required SearchUser searchUser,
-    required GetGuideApplications getGuideApplications,
   }) : _getUsers = getUsers,
        _updateUser = updateUser,
        _logoutUser = logoutUser,
        _deleteUser = deleteUser,
        _searchUser = searchUser,
-       _getGuideApplications = getGuideApplications,
-       super(const UsersState(userList: [], searchUserList: [], guideApplicationList: [])) {
+       super(const UsersState(userList: [], searchUserList: [])) {
     on<GetUsersEvent>(_getUsersToState);
     on<SelectUserEvent>(_selectUserToState);
     on<UpdateUserEvent>(_updateUserToState);
     on<DeleteUserEvent>(_deleteUserToState);
     on<LogoutUserEvent>(_logoutUserToState);
     on<SearchUserEvent>(_searchUserToState);
-    on<GetGuideApplicationsEvent>(_getGuideApplicationsToState);
   }
 
   void _getUsersToState(GetUsersEvent event, Emitter<UsersState> emit) async {
@@ -172,21 +168,4 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     }
   }
 
-  void _getGuideApplicationsToState(GetGuideApplicationsEvent event, Emitter<UsersState> emit) async {
-    try {
-      if (state.error != null) {
-        emit(state.copyWith(error: null));
-      }
-
-      final response = await _getGuideApplications.call();
-      if (response is DataSuccess) {
-        emit(state.copyWith(guideApplicationList: response.data!.guideApplications, error: null, getGuideApplicationsLoading: false));
-        print(state.guideApplicationList);
-      } else {
-        emit(state.copyWith(error: response.error, getGuideApplicationsLoading: false));
-      }
-    } catch (e) {
-      emit(state.copyWith(error: AppError(message: e.toString())));
-    }
-  }
 }

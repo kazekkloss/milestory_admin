@@ -57,10 +57,3 @@ class SearchUserEvent extends UsersEvent {
   @override
   List<Object?> get props => [name];
 }
-
-class GetGuideApplicationsEvent extends UsersEvent {
-  GetGuideApplicationsEvent();
-
-  @override
-  List<Object?> get props => [];
-}

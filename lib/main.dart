@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart';
+import 'package:milestory_crm/features/guide_application_management/presentation/guide_application_bloc/guide_application_bloc.dart';
 import 'package:milestory_crm/features/user_management/users_export.dart';
 import 'package:milestory_crm/injection.dart' as di;
 
@@ -18,6 +19,7 @@ void main() async {
         providers: [
           BlocProvider(create: (context) => GetIt.I<AuthBloc>()..add(CheckAuthEvent())),
           BlocProvider(create: (context) => GetIt.I<UsersBloc>()),
+          BlocProvider(create: (context) => GetIt.I<GuideApplicationBloc>()),
         ],
         child: const MileStoryCrmApp(),
       ),
