@@ -27,3 +27,11 @@ class DeleteApplicationEvent extends GuideApplicationEvent {
   @override
   List<Object?> get props => [guideApplicationId];
 }
+
+class SetGuideEvent extends GuideApplicationEvent {
+  final String guideApplicationId;
+  SetGuideEvent({required this.guideApplicationId});
+
+  @override
+  List<Object?> get props => [guideApplicationId];
+}

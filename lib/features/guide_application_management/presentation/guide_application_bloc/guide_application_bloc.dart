@@ -12,16 +12,22 @@ part 'guide_application_state.dart';
 class GuideApplicationBloc extends Bloc<GuideApplicationEvent, GuideApplicationState> {
   final GetGuideApplications _getGuideApplications;
   final DeleteGuideApplication _deleteGuideApplication;
+  final SetGuide _setGuide;
   int? _cachedStats;
   static const int _maxGuideApplicationsInMemory = 100;
 
-  GuideApplicationBloc({required GetGuideApplications getGuideApplications, required DeleteGuideApplication deleteGuideApplication})
-    : _getGuideApplications = getGuideApplications,
-      _deleteGuideApplication = deleteGuideApplication,
-      super(const GuideApplicationState(guideApplicationList: [])) {
+  GuideApplicationBloc({
+    required GetGuideApplications getGuideApplications,
+    required DeleteGuideApplication deleteGuideApplication,
+    required SetGuide setGuide,
+  }) : _getGuideApplications = getGuideApplications,
+       _deleteGuideApplication = deleteGuideApplication,
+       _setGuide = setGuide,
+       super(const GuideApplicationState(guideApplicationList: [])) {
     on<GetGuideApplicationsEvent>(_getGuideApplicationsToState);
     on<SelectApplicationEvent>(_selectApplicationToState);
     on<DeleteApplicationEvent>(_deleteApplicationToState);
+    on<SetGuideEvent>(_setGuideToState);
   }
 
   void _selectApplicationToState(SelectApplicationEvent event, Emitter<GuideApplicationState> emit) async {
@@ -98,6 +104,26 @@ class GuideApplicationBloc extends Bloc<GuideApplicationEvent, GuideApplicationS
       }
 
       emit(state.copyWith(deleteApplicationLoading: false));
+    } catch (e) {
+      emit(state.copyWith(error: AppError(message: e.toString())));
+    }
+  }
+
+  void _setGuideToState(SetGuideEvent event, Emitter<GuideApplicationState> emit) async {
+    try {
+      emit(state.copyWith(error: null, setGuideLoading: true));
+
+      final response = await _setGuide(guideApplicationId: event.guideApplicationId);
+      if (response is DataSuccess) {
+        final updatedGuideApplications =
+            state.guideApplicationList.where((guideApplication) => guideApplication.id != event.guideApplicationId).toList();
+
+        emit(state.copyWith(guideApplicationList: updatedGuideApplications, selectedApplication: null, setGuideLoading: false));
+      } else {
+        emit(state.copyWith(error: AppError(message: response.error!.message), setGuideLoading: false));
+      }
+
+      emit(state.copyWith(setGuideLoading: false));
     } catch (e) {
       emit(state.copyWith(error: AppError(message: e.toString())));
     }

@@ -23,4 +23,9 @@ class GuideApplicationRepositoryImpl implements GuideApplicationRepository {
   Future<DataState> deleteGuideApplication({required String guideApplicationId}) async {
     return await guideApplicationDataSource.deleteGuideApplication(guideApplicationId: guideApplicationId);
   }
+
+    @override
+  Future<DataState> setGuideApplication({required String guideApplicationId}) async {
+    return await guideApplicationDataSource.setGuideApplication(guideApplicationId: guideApplicationId);
+  }
 }

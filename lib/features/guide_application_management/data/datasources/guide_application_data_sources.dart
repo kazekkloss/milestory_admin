@@ -5,6 +5,7 @@ import '../../guide_application_export.dart';
 abstract class GuideApplicationDataSource {
   Future<DataState<GuideApplicationResponseModel>> getGuideApplications({int page});
   Future<DataState> deleteGuideApplication({required String guideApplicationId});
+  Future<DataState> setGuideApplication({required String guideApplicationId});
 }
 
 @LazySingleton(as: GuideApplicationDataSource)
@@ -37,6 +38,25 @@ class UsersDataSourceImpl implements GuideApplicationDataSource {
     try {
       final response = await apiClient.request(
         url: ApiConstants.deleteGuideApplication,
+        method: RequestMethod.delete,
+        data: {'guideApplicationId': guideApplicationId},
+      );
+
+      if (response is DataSuccess) {
+        return DataSuccess();
+      } else {
+        return DataFailed(response.error!);
+      }
+    } catch (e) {
+      return DataFailed(AppError(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<DataState> setGuideApplication({required String guideApplicationId}) async {
+    try {
+      final response = await apiClient.request(
+        url: ApiConstants.setGuide,
         method: RequestMethod.delete,
         data: {'guideApplicationId': guideApplicationId},
       );

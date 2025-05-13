@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/core_export.dart';
 import '../../guide_application_export.dart';
@@ -20,20 +21,17 @@ class GuideApplicationEditor extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Imię: ${state.selectedApplication?.firstName ?? ""}",
-                      style: CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.white),
-                    ),
+                    Text(state.selectedApplication!.name ?? "", style: CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.white)),
                     SizedBox(height: 10),
                     Text(
-                      "Nazwisko: ${state.selectedApplication?.lastName ?? ""}",
+                      state.selectedApplication!.createdAt != null
+                          ? DateFormat('dd.MM.yyyy HH:mm').format(state.selectedApplication!.createdAt!)
+                          : "",
                       style: CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.white),
                     ),
+
                     SizedBox(height: 10),
-                    Text(
-                      "Id: ${state.selectedApplication?.userId ?? ""}",
-                      style: CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.white),
-                    ),
+                    Text(state.selectedApplication!.userId ?? "", style: CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.white)),
                     SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,10 +46,22 @@ class GuideApplicationEditor extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        CustomElevatedButton(onPressed: state.selectedApplication!.id.isNotEmpty ? () {} : null, text: "Akceptuj", isLoading: false),
+                        CustomElevatedButton(
+                          onPressed:
+                              state.selectedApplication!.id.isNotEmpty
+                                  ? () => context.read<GuideApplicationBloc>().add(SetGuideEvent(guideApplicationId: state.selectedApplication!.id))
+                                  : null,
+                          text: "Akceptuj",
+                          isLoading: state.setGuideLoading,
+                        ),
                         const SizedBox(width: 20),
                         CustomElevatedButton(
-                          onPressed: state.selectedApplication!.id.isNotEmpty ? () {} : null,
+                          onPressed:
+                              state.selectedApplication!.id.isNotEmpty
+                                  ? () => context.read<GuideApplicationBloc>().add(
+                                    DeleteApplicationEvent(guideApplicationId: state.selectedApplication!.id),
+                                  )
+                                  : null,
                           text: "Usuń",
                           isLoading: state.deleteApplicationLoading,
                         ),
@@ -78,7 +88,7 @@ class EditorTab extends StatelessWidget {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color.fromARGB(255, 49, 49, 49)),
-        height: 400,
+        height: 250,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(10.0),

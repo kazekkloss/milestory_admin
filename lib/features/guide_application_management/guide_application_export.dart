@@ -5,6 +5,7 @@ export 'presentation/widgets/application_editor.dart';
 
 export 'domain/usecases/get_guide_applications.dart';
 export 'domain/usecases/delete_guide_application.dart';
+export 'domain/usecases/set_guide.dart';
 export 'domain/repository/guide_application_repository.dart';
 export 'domain/entities/guide_application.dart';
 export 'domain/entities/guide_application_response.dart';

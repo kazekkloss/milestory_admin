@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:milestory_crm/core/utils/widgets/error_listener.dart';
 import 'package:milestory_crm/features/guide_application_management/presentation/widgets/applications_list.dart';
 
 import '../../guide_application_export.dart';
@@ -14,19 +15,21 @@ class _GuideApplicationManagementPageState extends State<GuideApplicationManagem
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Column(
-              children: [
-                TopTab(),
-                Expanded(child: Row(children: [Expanded(flex: 2, child: GuideApplicationEditor())])),
-              ],
+      body: GlobalErrorListener<GuideApplicationBloc, GuideApplicationState>(
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Column(
+                children: [
+                  TopTab(),
+                  Expanded(child: Row(children: [Expanded(flex: 2, child: GuideApplicationEditor())])),
+                ],
+              ),
             ),
-          ),
-          Expanded(flex: 1, child: GuideApplicationList()),
-        ],
+            Expanded(flex: 1, child: GuideApplicationList()),
+          ],
+        ),
       ),
     );
   }

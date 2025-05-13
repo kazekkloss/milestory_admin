@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/core_export.dart';
 import '../../guide_application_export.dart';
@@ -23,7 +24,6 @@ class _GuideApplicationListState extends State<GuideApplicationList> {
     super.initState();
   }
 
-
   void _loadMore() {
     setState(() {
       _currentPage++;
@@ -42,22 +42,40 @@ class _GuideApplicationListState extends State<GuideApplicationList> {
             child: AppContainer(
               child: Column(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _currentPage = 1;
+                            });
+                            _guideApplicationBloc.add(GetGuideApplicationsEvent(page: _currentPage, isLoadMore: false));
+                          },
+                          icon: const Icon(Icons.refresh, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                   Expanded(
-                    child: state.guideApplicationList.isEmpty
-                        ? const Center(child: Text("Brak zgłoszeń"))
-                        : GridView.builder(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 0,
-                              childAspectRatio: 4,
-                            ),
-                            itemCount: state.guideApplicationList.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index == state.guideApplicationList.length) {
-                                return state.guideApplicationList.length % 20 == 0
-                                    ? Padding(
+                    child:
+                        state.guideApplicationList.isEmpty
+                            ? const Center(child: Text("Brak zgłoszeń"))
+                            : GridView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1, // Jedna kolumna, jak w Twoim kodzie
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 0,
+                                childAspectRatio: 4,
+                              ),
+                              itemCount: state.guideApplicationList.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == state.guideApplicationList.length) {
+                                  return state.guideApplicationList.length % 20 == 0
+                                      ? Padding(
                                         padding: const EdgeInsets.all(5),
                                         child: Container(
                                           color: CustomColorScheme.customColorScheme.onPrimary,
@@ -74,15 +92,15 @@ class _GuideApplicationListState extends State<GuideApplicationList> {
                                           ),
                                         ),
                                       )
-                                    : const SizedBox.shrink();
-                              }
-                              final guideApplication = state.guideApplicationList[index];
-                              return GuideApplicationTab(
-                                guideApplication: guideApplication,
-                                selected: guideApplication.id == state.selectedApplication!.id,
-                              );
-                            },
-                          ),
+                                      : const SizedBox.shrink();
+                                }
+                                final guideApplication = state.guideApplicationList[index];
+                                return GuideApplicationTab(
+                                  guideApplication: guideApplication,
+                                  selected: guideApplication.id == state.selectedApplication!.id,
+                                );
+                              },
+                            ),
                   ),
                 ],
               ),
@@ -115,17 +133,13 @@ class GuideApplicationTab extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${guideApplication.firstName} ${guideApplication.lastName}",
-                      style: selected
-                          ? CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.black)
-                          : CustomTextTheme.textTheme.labelMedium!,
-                    ),
-                  ],
+                Text(
+                  guideApplication.name!,
+                  style: selected ? CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.black) : CustomTextTheme.textTheme.labelMedium!,
+                ),
+                Text(
+                  DateFormat('dd.MM.yyyy HH:mm').format(guideApplication.createdAt!),
+                  style: selected ? CustomTextTheme.textTheme.labelMedium!.copyWith(color: Colors.black) : CustomTextTheme.textTheme.labelMedium!,
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ class GuideApplicationState extends Equatable {
   final GuideApplication? selectedApplication;
   final bool getApplicationsLoading;
   final bool deleteApplicationLoading;
+  final bool setGuideLoading;
   final int? stats;
   final AppError? error;
 
@@ -12,6 +13,7 @@ class GuideApplicationState extends Equatable {
     required this.guideApplicationList,
     this.getApplicationsLoading = false,
     this.deleteApplicationLoading = false,
+    this.setGuideLoading = false,
     this.error,
     this.stats = 0,
     this.selectedApplication = GuideApplication.empty,
@@ -22,6 +24,7 @@ class GuideApplicationState extends Equatable {
     AppError? error,
     bool? getApplicationsLoading,
     bool? deleteApplicationLoading,
+    bool? setGuideLoading,
     int? stats,
     GuideApplication? selectedApplication,
   }) {
@@ -31,10 +34,19 @@ class GuideApplicationState extends Equatable {
       error: error,
       getApplicationsLoading: getApplicationsLoading ?? this.getApplicationsLoading,
       deleteApplicationLoading: deleteApplicationLoading ?? this.deleteApplicationLoading,
+      setGuideLoading: setGuideLoading ?? this.setGuideLoading,
       stats: stats ?? this.stats,
     );
   }
 
   @override
-  List<Object?> get props => [getApplicationsLoading, guideApplicationList, error, stats, selectedApplication, deleteApplicationLoading];
+  List<Object?> get props => [
+    getApplicationsLoading,
+    guideApplicationList,
+    error,
+    stats,
+    selectedApplication,
+    deleteApplicationLoading,
+    setGuideLoading,
+  ];
 }

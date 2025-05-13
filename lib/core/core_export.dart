@@ -22,6 +22,7 @@ export 'utils/widgets/custom_elevated_button.dart';
 export 'utils/widgets/footer.dart';
 export 'utils/widgets/white_button.dart';
 export 'utils/widgets/confirm_dialogs.dart';
+export 'utils/widgets/error_listener.dart';
 export 'utils/role_conventer.dart';
 
 //theme

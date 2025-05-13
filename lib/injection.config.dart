@@ -38,6 +38,8 @@ import 'package:milestory_crm/features/guide_application_management/domain/useca
     as _i618;
 import 'package:milestory_crm/features/guide_application_management/domain/usecases/get_guide_applications.dart'
     as _i506;
+import 'package:milestory_crm/features/guide_application_management/domain/usecases/set_guide.dart'
+    as _i605;
 import 'package:milestory_crm/features/guide_application_management/guide_application_export.dart'
     as _i85;
 import 'package:milestory_crm/features/guide_application_management/presentation/guide_application_bloc/guide_application_bloc.dart'
@@ -139,6 +141,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i506.GetGuideApplications>(
       () => _i506.GetGuideApplications(gh<_i85.GuideApplicationRepository>()),
     );
+    gh.lazySingleton<_i605.SetGuide>(
+      () => _i605.SetGuide(gh<_i85.GuideApplicationRepository>()),
+    );
     gh.factory<_i26.UsersBloc>(
       () => _i26.UsersBloc(
         getUsers: gh<_i865.GetUsers>(),
@@ -148,17 +153,18 @@ extension GetItInjectableX on _i174.GetIt {
         searchUser: gh<_i865.SearchUser>(),
       ),
     );
+    gh.factory<_i648.GuideApplicationBloc>(
+      () => _i648.GuideApplicationBloc(
+        getGuideApplications: gh<_i85.GetGuideApplications>(),
+        deleteGuideApplication: gh<_i85.DeleteGuideApplication>(),
+        setGuide: gh<_i85.SetGuide>(),
+      ),
+    );
     gh.factory<_i732.AuthBloc>(
       () => _i732.AuthBloc(
         signIn: gh<_i290.SignIn>(),
         checkAuth: gh<_i290.CheckAuth>(),
         logout: gh<_i290.Logout>(),
-      ),
-    );
-    gh.factory<_i648.GuideApplicationBloc>(
-      () => _i648.GuideApplicationBloc(
-        getGuideApplications: gh<_i85.GetGuideApplications>(),
-        deleteGuideApplication: gh<_i85.DeleteGuideApplication>(),
       ),
     );
     return this;

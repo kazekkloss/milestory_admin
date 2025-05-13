@@ -13,8 +13,6 @@ export 'domain/usecases/search_user.dart';
 export 'domain/repository/users_repository.dart';
 export 'domain/entities/users_stats.dart';
 export 'domain/entities/users_response.dart';
-export 'domain/entities/guide_application.dart';
-export 'domain/entities/guide_application_response.dart';
 
 export 'data/datasources/users_data_sources.dart';
 export 'data/models/users_stats_model.dart';

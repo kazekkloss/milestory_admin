@@ -18,10 +18,10 @@ class ApiConstants {
   static const String logoutUser = '$baseUrl/logout-user';
   static const String getUserByNme = '$baseUrl/get-user-by-name';
 
-
   // GUIDE APPLICATION
   static const String getGuideApplications = '$baseUrl/get-guide-applications';
   static const String deleteGuideApplication = '$baseUrl/delete-guide-application';
+  static const String setGuide = '$baseUrl/set-guide';
 
   // IMAGE / AUDIO
   static const String saveAudio = '$baseUrl/save-audio';
