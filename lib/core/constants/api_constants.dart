@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'http://192.168.1.10:3000/api';
+  static const String baseUrl = 'http://192.168.1.7:3000/api';
   //static const String baseUrl = 'https://milestory.pl/api';
   //static const String baseUrl = 'https://milestory-backend.onrender.com/api';
 
@@ -30,7 +30,7 @@ class ApiConstants {
 
   // TOUR
   static const String saveTour = '$baseUrl/save-tour';
-  static const String getToursByAuthorId = '$baseUrl/get-tours-by-authorId';
+  static const String getAllTours = '$baseUrl/get-all-tours';
   static const String deleteTour = '$baseUrl/delete-tour';
 
   // TOUR POINT

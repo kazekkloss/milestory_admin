@@ -1,8 +1,11 @@
 export 'constants/api_constants.dart';
 export 'constants/error.dart';
 export 'constants/transport_mode.dart';
+export 'constants/tour_status.dart';
 export 'constants/entities/user_entity.dart';
+export 'constants/entities/tour_entity.dart';
 export 'constants/models/user_model.dart';
+export 'constants/models/tour_model.dart';
 
 export 'network/api_client.dart';
 export 'network/api_error.dart';
@@ -24,6 +27,8 @@ export 'utils/widgets/white_button.dart';
 export 'utils/widgets/confirm_dialogs.dart';
 export 'utils/widgets/error_listener.dart';
 export 'utils/role_conventer.dart';
+export 'utils/widgets/dropdown.dart';
+export 'utils/widgets/image.dart';
 
 //theme
 export 'theme/app_theme.dart';

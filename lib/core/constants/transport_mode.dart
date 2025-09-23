@@ -9,36 +9,57 @@ enum TransportMode {
   walk,
 }
 
-String mapRouteEnumToString(TransportMode route) {
-  switch (route) {
-    case TransportMode.none:
-      return 'Wybierz z listy';
-    case TransportMode.car:
-      return 'Samochodem';
-    case TransportMode.train:
-      return 'Pociągiem';
-    case TransportMode.publicTransport:
-      return 'Komunikacją miejską';
-    case TransportMode.bike:
-      return 'Rowerem';
-    case TransportMode.walk:
-      return 'Spacerkiem';
-  }
-}
+class TransportModeData {
+  // Lista stringów dla TransportMode
+  final List<String> transportModeStrings;
+  // Lista ikon dla TransportMode
+  final List<Widget> transportModeIcons;
 
-Icon mapRouteEnumToIcon(TransportMode route) {
-  switch (route) {
-    case TransportMode.none:
-      return const Icon(Icons.add_road);
-    case TransportMode.car:
-      return const Icon(Icons.directions_car);
-    case TransportMode.train:
-      return const Icon(Icons.train);
-    case TransportMode.publicTransport:
-      return const Icon(Icons.directions_bus);
-    case TransportMode.bike:
-      return const Icon(Icons.directions_bike);
-    case TransportMode.walk:
-      return const Icon(Icons.directions_walk);
+  TransportModeData()
+      : transportModeStrings = TransportMode.values
+            .map((mode) => mapRouteEnumToString(mode))
+            .toList(),
+        transportModeIcons =
+            TransportMode.values.map((mode) => mapRouteEnumToIcon(mode)).toList();
+
+  static String mapRouteEnumToString(TransportMode route) {
+    switch (route) {
+      case TransportMode.none:
+        return 'Wybierz z listy';
+      case TransportMode.car:
+        return 'Samochodem';
+      case TransportMode.train:
+        return 'Pociągiem';
+      case TransportMode.publicTransport:
+        return 'Komunikacją miejską';
+      case TransportMode.bike:
+        return 'Rowerem';
+      case TransportMode.walk:
+        return 'Spacerkiem';
+    }
+  }
+
+  // Mapowanie TransportMode na ikonę
+  static Icon mapRouteEnumToIcon(TransportMode route) {
+    switch (route) {
+      case TransportMode.none:
+        return const Icon(Icons.add_road);
+      case TransportMode.car:
+        return const Icon(Icons.directions_car);
+      case TransportMode.train:
+        return const Icon(Icons.train);
+      case TransportMode.publicTransport:
+        return const Icon(Icons.directions_bus);
+      case TransportMode.bike:
+        return const Icon(Icons.directions_bike);
+      case TransportMode.walk:
+        return const Icon(Icons.directions_walk);
+    }
+  }
+
+  // Metoda do uzyskania indeksu TransportMode na podstawie stringa
+  TransportMode getTransportModeFromString(String value) {
+    final index = transportModeStrings.indexOf(value);
+    return index != -1 ? TransportMode.values[index] : TransportMode.none;
   }
 }

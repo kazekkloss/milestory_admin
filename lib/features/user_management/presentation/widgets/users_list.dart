@@ -57,7 +57,7 @@ class _UserListState extends State<UsersList> {
                       children: [
                         Row(
                           children: [
-                            Text("Typ użytkowników: ", style: CustomTextTheme.textTheme.labelMedium!),
+                            Text("Typ użytkowników:   ", style: CustomTextTheme.textTheme.labelMedium!),
                             DropdownMenu(
                               initialSelection: null,
                               dropdownMenuEntries: <DropdownMenuEntry<String?>>[
@@ -77,7 +77,7 @@ class _UserListState extends State<UsersList> {
                         ),
                         Row(
                           children: [
-                            Text("Weryfikacja konta : ", style: CustomTextTheme.textTheme.labelMedium!),
+                            Text("Weryfikacja konta:   ", style: CustomTextTheme.textTheme.labelMedium!),
                             DropdownMenu(
                               initialSelection: null,
                               dropdownMenuEntries: <DropdownMenuEntry<bool?>>[
@@ -101,7 +101,7 @@ class _UserListState extends State<UsersList> {
                               _selectedVerify = null;
                               _currentPage = 1;
                             });
-                            _userBloc.add(GetUsersEvent(page: _currentPage, isLoadMore: false));
+                            _userBloc.add(GetUsersEvent(page: _currentPage, role: _selectedRole, verify: _selectedVerify, isLoadMore: false));
                           },
                           icon: const Icon(Icons.refresh, color: Colors.white),
                         ),

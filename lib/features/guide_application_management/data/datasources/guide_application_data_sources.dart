@@ -57,7 +57,7 @@ class UsersDataSourceImpl implements GuideApplicationDataSource {
     try {
       final response = await apiClient.request(
         url: ApiConstants.setGuide,
-        method: RequestMethod.delete,
+        method: RequestMethod.post,
         data: {'guideApplicationId': guideApplicationId},
       );
 

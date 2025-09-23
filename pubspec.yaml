@@ -49,6 +49,10 @@ dependencies:
   bloc: ^9.0.0
   flutter_typeahead: ^5.2.0
   intl: ^0.20.2
+  dropdown_button2: ^2.3.9
+  google_maps_flutter: ^2.12.3
+  collection: ^1.19.1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

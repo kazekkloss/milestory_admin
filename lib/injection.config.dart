@@ -30,6 +30,15 @@ import 'package:milestory_crm/features/auth/domain/usecases/sign_in.dart'
     as _i142;
 import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart'
     as _i732;
+import 'package:milestory_crm/features/creator/creator_export.dart' as _i911;
+import 'package:milestory_crm/features/creator/data/datasources/creator_data_source.dart'
+    as _i730;
+import 'package:milestory_crm/features/creator/data/repository/creator_repository_impl.dart'
+    as _i289;
+import 'package:milestory_crm/features/creator/domain/usecases/get_tour_points.dart'
+    as _i286;
+import 'package:milestory_crm/features/creator/presentation/creator_bloc/creator_bloc.dart'
+    as _i772;
 import 'package:milestory_crm/features/guide_application_management/data/datasources/guide_application_data_sources.dart'
     as _i641;
 import 'package:milestory_crm/features/guide_application_management/data/repository/guide_application_repository_impl.dart'
@@ -64,6 +73,20 @@ import 'package:milestory_crm/features/user_management/presentation/users_bloc/u
     as _i26;
 import 'package:milestory_crm/features/user_management/users_export.dart'
     as _i865;
+import 'package:milestory_crm/features/tour_management/data/datasources/tour_data_source.dart'
+    as _i78;
+import 'package:milestory_crm/features/tour_management/data/repository/tour_repository_impl.dart'
+    as _i561;
+import 'package:milestory_crm/features/tour_management/domain/usecases/delete_tour.dart'
+    as _i236;
+import 'package:milestory_crm/features/tour_management/domain/usecases/get_tours.dart'
+    as _i954;
+import 'package:milestory_crm/features/tour_management/domain/usecases/publish_tour.dart'
+    as _i339;
+import 'package:milestory_crm/features/tour_management/presentation/bloc/tour_management_bloc.dart'
+    as _i126;
+import 'package:milestory_crm/features/tour_management/tour_managenent_export.dart'
+    as _i18;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -85,10 +108,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.TokenManager>(),
       ),
     );
+    gh.lazySingleton<_i730.CreatorDataSource>(
+      () => _i730.CreatorDataSourceImpl(gh<_i937.ApiClient>()),
+    );
     gh.lazySingleton<_i865.UsersRepository>(
       () => _i933.UsersRepositoryImpl(
         usersDataSource: gh<_i865.UsersDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i78.TourDataSource>(
+      () => _i78.TourDataSourceImpl(gh<_i937.ApiClient>()),
     );
     gh.lazySingleton<_i641.GuideApplicationDataSource>(
       () => _i641.UsersDataSourceImpl(
@@ -101,6 +130,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.ApiClient>(),
         gh<_i937.TokenManager>(),
       ),
+    );
+    gh.lazySingleton<_i18.TourRepository>(
+      () => _i561.TourRepositoryImpl(tourDataSource: gh<_i18.TourDataSource>()),
     );
     gh.lazySingleton<_i85.GuideApplicationRepository>(
       () => _i49.GuideApplicationRepositoryImpl(
@@ -122,9 +154,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i909.UpdateUser>(
       () => _i909.UpdateUser(gh<_i865.UsersRepository>()),
     );
+    gh.lazySingleton<_i911.CreatorRepository>(
+      () => _i289.CreatorRepositoryImpl(
+        creatorDataSource: gh<_i911.CreatorDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i286.GetTourPoints>(
+      () => _i286.GetTourPoints(gh<_i911.CreatorRepository>()),
+    );
     gh.lazySingleton<_i55.AuthRepository>(
       () =>
           _i721.AuthRepositoryImpl(authDataSource: gh<_i359.AuthDataSource>()),
+    );
+    gh.lazySingleton<_i954.GetTours>(
+      () => _i954.GetTours(gh<_i18.TourRepository>()),
+    );
+    gh.lazySingleton<_i236.DeleteTour>(
+      () => _i236.DeleteTour(gh<_i18.TourRepository>()),
+    );
+    gh.lazySingleton<_i339.PublishTour>(
+      () => _i339.PublishTour(gh<_i18.TourRepository>()),
     );
     gh.lazySingleton<_i580.CheckAuth>(
       () => _i580.CheckAuth(gh<_i55.AuthRepository>()),
@@ -165,6 +214,16 @@ extension GetItInjectableX on _i174.GetIt {
         signIn: gh<_i290.SignIn>(),
         checkAuth: gh<_i290.CheckAuth>(),
         logout: gh<_i290.Logout>(),
+      ),
+    );
+    gh.factory<_i772.CreatorBloc>(
+      () => _i772.CreatorBloc(getTourPoints: gh<_i911.GetTourPoints>()),
+    );
+    gh.factory<_i126.TourManagementBloc>(
+      () => _i126.TourManagementBloc(
+        getTours: gh<_i18.GetTours>(),
+        deleteTour: gh<_i18.DeleteTour>(),
+        publishTour: gh<_i18.PublishTour>(),
       ),
     );
     return this;

@@ -167,5 +167,4 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       emit(state.copyWith(error: AppError(message: e.toString())));
     }
   }
-
 }

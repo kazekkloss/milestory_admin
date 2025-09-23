@@ -5,6 +5,7 @@ class User {
   final String? name;
   final bool verify;
   final String role;
+  
 
   const User({
     required this.id,

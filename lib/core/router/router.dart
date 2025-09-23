@@ -4,10 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart';
 import 'package:milestory_crm/features/auth/presentation/screen/auth_page.dart';
-import 'package:milestory_crm/features/home.dart/home.dart';
-import 'package:milestory_crm/features/road_management/presentation/road_management_page.dart';
+import 'package:milestory_crm/features/home/home.dart';
 import 'package:milestory_crm/features/user_management/presentation/screen/user_page.dart';
+import 'package:milestory_crm/features/tour_management/tour_managenent_export.dart';
 
+import '../../features/creator/creator_export.dart';
 import '../../features/guide_application_management/guide_application_export.dart';
 import '../core_export.dart';
 import '../utils/widgets/nav_bar.dart';
@@ -23,7 +24,7 @@ class AppRouter {
     NavBarItem(initialLocation: '/home', icon: Icon(FontAwesomeIcons.house), label: ""),
     NavBarItem(initialLocation: '/user_management', icon: Icon(FontAwesomeIcons.user), label: ""),
     NavBarItem(initialLocation: '/guide_application_management', icon: Icon(FontAwesomeIcons.message), label: ""),
-    NavBarItem(initialLocation: '/road_management', icon: Icon(FontAwesomeIcons.map), label: ""),
+    NavBarItem(initialLocation: '/tour_management', icon: Icon(FontAwesomeIcons.map), label: ""),
     NavBarItem(initialLocation: '', icon: Icon(FontAwesomeIcons.rightFromBracket), label: ""),
   ];
 
@@ -72,9 +73,20 @@ class AppRouter {
             pageBuilder: (context, state) => NoTransitionPage(child: const GuideApplicationManagementPage(), key: state.pageKey),
           ),
           GoRoute(
-            name: RouteConstants.roadManagement,
-            path: '/road_management',
-            pageBuilder: (context, state) => NoTransitionPage(child: const RoadManagementPage(), key: state.pageKey),
+            name: RouteConstants.tourManagement,
+            path: '/tour_management',
+            pageBuilder: (context, state) => NoTransitionPage(child: const TourPage(), key: state.pageKey),
+            routes: [
+              GoRoute(
+                name: RouteConstants.creator,
+                path: 'creator',
+                pageBuilder: ((context, state) {
+                  Tour tour = state.extra as Tour;
+                  print("Tour ID in Router: ${tour.id}");
+                  return NoTransitionPage(child: CreatorPage(tour: tour));
+                }),
+              ),
+            ],
           ),
         ],
       ),

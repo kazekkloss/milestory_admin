@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart';
+import '../../../features/auth/presentation/auth_bloc/auth_bloc.dart';
 import '../../core_export.dart';
 
 class GlobalErrorListener<B extends Bloc<dynamic, S>, S> extends StatelessWidget {
@@ -19,7 +19,7 @@ class GlobalErrorListener<B extends Bloc<dynamic, S>, S> extends StatelessWidget
         if (error != null) {
           if (error.apiError != null) {
             if (error.apiError!.code == 401) {
-              //context.read<AuthBloc>().add(LogoutEvent(isLocal: true));
+              context.read<AuthBloc>().add(LogoutEvent(isLocal: true));
               return;
             }
             errorMessage = error.apiError!.message;
@@ -28,14 +28,10 @@ class GlobalErrorListener<B extends Bloc<dynamic, S>, S> extends StatelessWidget
           } else {
             errorMessage = "An unknown error occurred";
           }
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
+              width: 250,
               content: Text(errorMessage, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
-              margin: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
             ),
           );
         }
