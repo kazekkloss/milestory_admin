@@ -32,8 +32,14 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState> publishTour({required String tourId}) async {
-    final response = await tourDataSource.publishTour(tourId: tourId);
+  Future<DataState> setPublicTour({required String tourId}) async {
+    final response = await tourDataSource.setPublicTour(tourId: tourId);
     return response;
   }
-}
+
+  @override
+  Future<DataState> setPrivateTour({required String tourId}) async {
+    final response = await tourDataSource.setPrivateTour(tourId: tourId);
+    return response;
+  }
+  }

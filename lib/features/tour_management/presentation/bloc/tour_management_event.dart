@@ -37,3 +37,11 @@ class SetPublicTourEvent extends TourManagementEvent {
   @override
   List<Object?> get props => [tourId];
 }
+
+class SetPrivateTourEvent extends TourManagementEvent {
+  final String tourId;
+  SetPrivateTourEvent({required this.tourId});
+
+  @override
+  List<Object?> get props => [tourId];
+}

@@ -7,7 +7,8 @@ export 'presentation/bloc/tour_management_bloc.dart';
 export 'domain/repository/tour_repository.dart';
 export 'domain/usecases/get_tours.dart';
 export 'domain/usecases/delete_tour.dart';
-export 'domain/usecases/publish_tour.dart';
+export 'domain/usecases/set_public_tour.dart';
+export 'domain/usecases/set_private_tour.dart';
 export 'domain/etities/tours_response.dart';
 export 'domain/etities/tours_stats.dart';
 

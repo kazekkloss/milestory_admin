@@ -10,20 +10,27 @@ part 'tour_management_state.dart';
 class TourManagementBloc extends Bloc<TourManagementEvent, TourManagementState> {
   final GetTours _getTours;
   final DeleteTour _deleteTour;
-  final PublishTour _publishTour;
+  final SetPublicTour _setPublicTour;
+  final SetPrivateTour _setPrivateTour;
 
   ToursStats? _cachedStats;
   static const int _maxToursInMemory = 100;
 
-  TourManagementBloc({required GetTours getTours, required DeleteTour deleteTour, required PublishTour publishTour})
-    : _getTours = getTours,
-      _deleteTour = deleteTour,
-      _publishTour = publishTour,
-      super(const TourManagementState(tours: [])) {
+  TourManagementBloc({
+    required GetTours getTours,
+    required DeleteTour deleteTour,
+    required SetPublicTour setPublicTour,
+    required SetPrivateTour setPrivateTour,
+  }) : _getTours = getTours,
+       _deleteTour = deleteTour,
+       _setPublicTour = setPublicTour,
+       _setPrivateTour = setPrivateTour,
+       super(const TourManagementState(tours: [])) {
     on<GetToursEvent>(_onGetTours);
     on<DeleteTourEvent>(_onDeleteTour);
     on<SelectTourEvent>(_onSelectTour);
     on<SetPublicTourEvent>(_onSetPublicTour);
+    on<SetPrivateTourEvent>((_onSetPrivateTour));
   }
 
   void _onSelectTour(SelectTourEvent event, Emitter<TourManagementState> emit) async {
@@ -92,17 +99,45 @@ class TourManagementBloc extends Bloc<TourManagementEvent, TourManagementState> 
 
   Future<void> _onSetPublicTour(SetPublicTourEvent event, Emitter<TourManagementState> emit) async {
     try {
-      print("SET PUBLIC");
-      // emit(state.copyWith(error: null, publishLoading: true));
+      emit(state.copyWith(error: null, publishLoading: true));
 
-      // final response = await _publishTour.call(tourId: event.tourId);
+      final response = await _setPublicTour.call(tourId: event.tourId);
 
-      // if (response is DataSuccess) {
-      //   add(GetToursEvent(userId: state.selectedTour!.authorId));
-      //   emit(state.copyWith(publishLoading: false, error: const AppError(message: "Trasa została wysłana do weryfikacji")));
-      // } else {
-      //   emit(state.copyWith(error: response.error, publishLoading: false));
-      // }
+      if (response is DataSuccess) {
+        add(GetToursEvent(userId: state.selectedTour!.authorId));
+        emit(
+          state.copyWith(
+            selectedTour: state.selectedTour!.copyWith(status: TourStatus.public),
+            publishLoading: false,
+            error: const AppError(message: "Trasa została opublikowana"),
+          ),
+        );
+      } else {
+        emit(state.copyWith(error: response.error, publishLoading: false));
+      }
+    } catch (e) {
+      emit(state.copyWith(publishLoading: false, error: AppError(message: e.toString())));
+    }
+  }
+
+  Future<void> _onSetPrivateTour(SetPrivateTourEvent event, Emitter<TourManagementState> emit) async {
+    try {
+      emit(state.copyWith(error: null, publishLoading: true));
+
+      final response = await _setPrivateTour.call(tourId: event.tourId);
+
+      if (response is DataSuccess) {
+        add(GetToursEvent(userId: state.selectedTour!.authorId));
+        emit(
+          state.copyWith(
+            selectedTour: state.selectedTour!.copyWith(status: TourStatus.private),
+            publishLoading: false,
+            error: const AppError(message: "Trasa została ustawiona jako prywatna"),
+          ),
+        );
+      } else {
+        emit(state.copyWith(error: response.error, publishLoading: false));
+      }
     } catch (e) {
       emit(state.copyWith(publishLoading: false, error: AppError(message: e.toString())));
     }

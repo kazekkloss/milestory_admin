@@ -51,7 +51,7 @@ class _CreatorPageState extends State<CreatorPage> {
                 Expanded(
                   child: Stack(
                     children: [
-                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [TopTab(tour: widget.tour), MapWidget(tourId: widget.tour.id!)]),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [TopTab(), MapWidget(tourId: widget.tour.id!)]),
                       if (_showDirectionWidget)
                         Positioned(
                           top: _arrowPosition.dy,

@@ -53,6 +53,22 @@ import 'package:milestory_crm/features/guide_application_management/guide_applic
     as _i85;
 import 'package:milestory_crm/features/guide_application_management/presentation/guide_application_bloc/guide_application_bloc.dart'
     as _i648;
+import 'package:milestory_crm/features/tour_management/data/datasources/tour_data_source.dart'
+    as _i20;
+import 'package:milestory_crm/features/tour_management/data/repository/tour_repository_impl.dart'
+    as _i334;
+import 'package:milestory_crm/features/tour_management/domain/usecases/delete_tour.dart'
+    as _i714;
+import 'package:milestory_crm/features/tour_management/domain/usecases/get_tours.dart'
+    as _i940;
+import 'package:milestory_crm/features/tour_management/domain/usecases/set_private_tour.dart'
+    as _i954;
+import 'package:milestory_crm/features/tour_management/domain/usecases/set_public_tour.dart'
+    as _i130;
+import 'package:milestory_crm/features/tour_management/presentation/bloc/tour_management_bloc.dart'
+    as _i326;
+import 'package:milestory_crm/features/tour_management/tour_managenent_export.dart'
+    as _i595;
 import 'package:milestory_crm/features/user_management/data/datasources/users_data_sources.dart'
     as _i455;
 import 'package:milestory_crm/features/user_management/data/repository/users_repository_impl.dart'
@@ -73,20 +89,6 @@ import 'package:milestory_crm/features/user_management/presentation/users_bloc/u
     as _i26;
 import 'package:milestory_crm/features/user_management/users_export.dart'
     as _i865;
-import 'package:milestory_crm/features/tour_management/data/datasources/tour_data_source.dart'
-    as _i78;
-import 'package:milestory_crm/features/tour_management/data/repository/tour_repository_impl.dart'
-    as _i561;
-import 'package:milestory_crm/features/tour_management/domain/usecases/delete_tour.dart'
-    as _i236;
-import 'package:milestory_crm/features/tour_management/domain/usecases/get_tours.dart'
-    as _i954;
-import 'package:milestory_crm/features/tour_management/domain/usecases/publish_tour.dart'
-    as _i339;
-import 'package:milestory_crm/features/tour_management/presentation/bloc/tour_management_bloc.dart'
-    as _i126;
-import 'package:milestory_crm/features/tour_management/tour_managenent_export.dart'
-    as _i18;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -111,13 +113,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i730.CreatorDataSource>(
       () => _i730.CreatorDataSourceImpl(gh<_i937.ApiClient>()),
     );
+    gh.lazySingleton<_i20.TourDataSource>(
+      () => _i20.TourDataSourceImpl(gh<_i937.ApiClient>()),
+    );
     gh.lazySingleton<_i865.UsersRepository>(
       () => _i933.UsersRepositoryImpl(
         usersDataSource: gh<_i865.UsersDataSource>(),
       ),
-    );
-    gh.lazySingleton<_i78.TourDataSource>(
-      () => _i78.TourDataSourceImpl(gh<_i937.ApiClient>()),
     );
     gh.lazySingleton<_i641.GuideApplicationDataSource>(
       () => _i641.UsersDataSourceImpl(
@@ -130,9 +132,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.ApiClient>(),
         gh<_i937.TokenManager>(),
       ),
-    );
-    gh.lazySingleton<_i18.TourRepository>(
-      () => _i561.TourRepositoryImpl(tourDataSource: gh<_i18.TourDataSource>()),
     );
     gh.lazySingleton<_i85.GuideApplicationRepository>(
       () => _i49.GuideApplicationRepositoryImpl(
@@ -162,18 +161,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i286.GetTourPoints>(
       () => _i286.GetTourPoints(gh<_i911.CreatorRepository>()),
     );
+    gh.lazySingleton<_i595.TourRepository>(
+      () =>
+          _i334.TourRepositoryImpl(tourDataSource: gh<_i595.TourDataSource>()),
+    );
     gh.lazySingleton<_i55.AuthRepository>(
       () =>
           _i721.AuthRepositoryImpl(authDataSource: gh<_i359.AuthDataSource>()),
-    );
-    gh.lazySingleton<_i954.GetTours>(
-      () => _i954.GetTours(gh<_i18.TourRepository>()),
-    );
-    gh.lazySingleton<_i236.DeleteTour>(
-      () => _i236.DeleteTour(gh<_i18.TourRepository>()),
-    );
-    gh.lazySingleton<_i339.PublishTour>(
-      () => _i339.PublishTour(gh<_i18.TourRepository>()),
     );
     gh.lazySingleton<_i580.CheckAuth>(
       () => _i580.CheckAuth(gh<_i55.AuthRepository>()),
@@ -219,11 +213,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i772.CreatorBloc>(
       () => _i772.CreatorBloc(getTourPoints: gh<_i911.GetTourPoints>()),
     );
-    gh.factory<_i126.TourManagementBloc>(
-      () => _i126.TourManagementBloc(
-        getTours: gh<_i18.GetTours>(),
-        deleteTour: gh<_i18.DeleteTour>(),
-        publishTour: gh<_i18.PublishTour>(),
+    gh.lazySingleton<_i130.SetPublicTour>(
+      () => _i130.SetPublicTour(gh<_i595.TourRepository>()),
+    );
+    gh.lazySingleton<_i954.SetPrivateTour>(
+      () => _i954.SetPrivateTour(gh<_i595.TourRepository>()),
+    );
+    gh.lazySingleton<_i940.GetTours>(
+      () => _i940.GetTours(gh<_i595.TourRepository>()),
+    );
+    gh.lazySingleton<_i714.DeleteTour>(
+      () => _i714.DeleteTour(gh<_i595.TourRepository>()),
+    );
+    gh.factory<_i326.TourManagementBloc>(
+      () => _i326.TourManagementBloc(
+        getTours: gh<_i595.GetTours>(),
+        deleteTour: gh<_i595.DeleteTour>(),
+        setPublicTour: gh<_i595.SetPublicTour>(),
+        setPrivateTour: gh<_i595.SetPrivateTour>(),
       ),
     );
     return this;

@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'http://192.168.1.7:3000/api';
+  static const String baseUrl = 'http://192.168.1.1:3000/api';
   //static const String baseUrl = 'https://milestory.pl/api';
   //static const String baseUrl = 'https://milestory-backend.onrender.com/api';
 
@@ -26,12 +26,14 @@ class ApiConstants {
   // IMAGE / AUDIO
   static const String saveAudio = '$baseUrl/save-audio';
   static const String saveImage = '$baseUrl/save-image';
+  static const String deleteImage = '$baseUrl/delete-image';
   static const String getAudio = '$baseUrl/get-audio';
 
   // TOUR
   static const String saveTour = '$baseUrl/save-tour';
   static const String getAllTours = '$baseUrl/get-all-tours';
   static const String deleteTour = '$baseUrl/delete-tour';
+  static const String changeStatusTour = '$baseUrl/change-status-tour';
 
   // TOUR POINT
   static const String saveTourPoint = '$baseUrl/save-tour-point';

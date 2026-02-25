@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: Text("Zalogowany jako admin ${state.user.name ?? 'Brak imienia'}", style: Theme.of(context).textTheme.titleLarge),
                 ),
-                Expanded(child: Center(child: Text("Statystyki itp"))),
+                Expanded(child: Center(child: Text("Ta sekcja jest w budowie...", style: Theme.of(context).textTheme.headlineMedium))),
               ],
             ),
           ),

@@ -8,7 +8,8 @@ abstract class TourDataSource {
   Future<DataState<ToursResponse>> getTours({int page, required String userId, String? tourStatus});
   Future<DataState> deleteTour({required String tourId});
   Future<DataState> deleteImage({required String imageUrl});
-  Future<DataState> publishTour({required String tourId});
+  Future<DataState> setPublicTour({required String tourId});
+  Future<DataState> setPrivateTour({required String tourId});
 }
 
 @LazySingleton(as: TourDataSource)
@@ -52,38 +53,50 @@ class TourDataSourceImpl implements TourDataSource {
   @override
   Future<DataState> deleteImage({required String imageUrl}) async {
     try {
-      // final response = await apiClient.request(
-      //   url: ApiConstants.deleteImage,
-      //   method: RequestMethod.delete,
-      //   data: {'imageUrl': imageUrl},
-      // );
-      // if (response is DataSuccess) {
-      //   return DataSuccess(response);
-      // } else {
-      //   return DataFailed(response.error!);
-      // }
-
-      return DataFailed(AppError(message: 'Delete image endpoint is not implemented yet.'));
+      final response = await apiClient.request(url: ApiConstants.deleteImage, method: RequestMethod.delete, data: {'imageUrl': imageUrl});
+      if (response is DataSuccess) {
+        return DataSuccess(response);
+      } else {
+        return DataFailed(response.error!);
+      }
     } catch (e) {
       return DataFailed(AppError(message: 'Unexpected error: ${e.toString()}'));
     }
   }
 
   @override
-  Future<DataState> publishTour({required String tourId}) async {
+  Future<DataState> setPublicTour({required String tourId}) async {
     try {
-      // final response = await apiClient.request(
-      //   url: ApiConstants.changeStatusTour,
-      //   method: RequestMethod.post,
-      //   data: {'tourId': tourId, 'status': 'verify'},
-      // );
+      final response = await apiClient.request(
+        url: ApiConstants.changeStatusTour,
+        method: RequestMethod.post,
+        data: {'tourId': tourId, 'status': 'public'},
+      );
 
-      // if (response is DataSuccess) {
-      //   return DataSuccess(response);
-      // } else {
-      //   return DataFailed(response.error!);
-      // }
-      return DataFailed(AppError(message: 'Publish tour endpoint is not implemented yet.'));
+      if (response is DataSuccess) {
+        return DataSuccess(response);
+      } else {
+        return DataFailed(response.error!);
+      }
+    } catch (e) {
+      return DataFailed(AppError(message: 'Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<DataState> setPrivateTour({required String tourId}) async {
+    try {
+      final response = await apiClient.request(
+        url: ApiConstants.changeStatusTour,
+        method: RequestMethod.post,
+        data: {'tourId': tourId, 'status': 'private'},
+      );
+
+      if (response is DataSuccess) {
+        return DataSuccess(response);
+      } else {
+        return DataFailed(response.error!);
+      }
     } catch (e) {
       return DataFailed(AppError(message: 'Unexpected error: ${e.toString()}'));
     }

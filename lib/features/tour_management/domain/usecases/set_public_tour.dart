@@ -3,12 +3,12 @@ import '../../../../../core/core_export.dart';
 import '../../tour_managenent_export.dart';
 
 @lazySingleton
-class PublishTour {
+class SetPublicTour {
   final TourRepository repository;
 
-  PublishTour(this.repository);
+  SetPublicTour(this.repository);
 
   Future<DataState> call({required String tourId}) async {
-    return await repository.publishTour(tourId: tourId);
+    return await repository.setPublicTour(tourId: tourId);
   }
 }

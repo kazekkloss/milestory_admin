@@ -70,97 +70,73 @@ class _TourPointEditorState extends State<TourPointEditor> {
         return Container(
           width: 340,
           decoration: const BoxDecoration(border: Border(left: BorderSide(color: Color.fromARGB(255, 49, 49, 49), width: 1.0))),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            onPressed: () {
-                              _creatorBloc.add(SelectTourPointEvent(tourPointId: widget.tourPointId));
-                            },
-                            icon: const Icon(FontAwesomeIcons.xmark, color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Nazwa przystanku", style: Theme.of(context).textTheme.labelMedium),
-                            const SizedBox(height: 3),
-                            AppContainer(
-                              padding: const EdgeInsets.all(13),
-                              child: SizedBox(width: 320, child: Text(currentTourPoint.title!, style: Theme.of(context).textTheme.bodySmall)),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Opis trasy", style: Theme.of(context).textTheme.labelMedium),
-                            const SizedBox(height: 3),
-                            AppContainer(
-                              padding: const EdgeInsets.all(13),
-                              child: SizedBox(
-                                width: 320,
-                                height: 244,
-                                child: SingleChildScrollView(
-                                  child: Text(currentTourPoint.description!, style: Theme.of(context).textTheme.bodySmall),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        AppContainer(
-                          padding: const EdgeInsets.all(10),
-                          height: 140,
-                          child: Scrollbar(
-                            child: ListView.builder(
-                              itemCount: currentTourPoint.areas.length,
-                              itemBuilder: (context, index) {
-                                final area = currentTourPoint.areas[index];
-                                final isSelected = state.selectedAreaId == area.id;
-                                return _areaTab(isSelected, area, index, currentTourPoint);
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Container(
-                        //   width: 320,
-                        //   height: 180,
-                        //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: Colors.grey[200]),
-                        // ),
-                        AppContainer(child: ImageNetwork(imageUrl: currentTourPoint.imageUrl, width: 320, height: 180, borderRadius: 8.0)),
-                      ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      onPressed: () {
+                        _creatorBloc.add(SelectTourPointEvent(tourPointId: widget.tourPointId));
+                      },
+                      icon: const Icon(FontAwesomeIcons.xmark, color: Colors.white),
                     ),
                   ),
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color.fromARGB(255, 49, 49, 49), width: 1.0))),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 320),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomElevatedButton(onPressed: () {}, text: "Zatwierdź", isLoading: state.savePointLoading),
-                        CustomElevatedButton(onPressed: () {}, text: "Usuń", isLoading: state.deletePointLoading),
-                      ],
+                  const SizedBox(height: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Nazwa przystanku", style: Theme.of(context).textTheme.labelMedium),
+                      const SizedBox(height: 3),
+                      AppContainer(
+                        padding: const EdgeInsets.all(13),
+                        child: SizedBox(width: 320, child: Text(currentTourPoint.title!, style: Theme.of(context).textTheme.bodySmall)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Opis trasy", style: Theme.of(context).textTheme.labelMedium),
+                      const SizedBox(height: 3),
+                      AppContainer(
+                        padding: const EdgeInsets.all(13),
+                        child: SizedBox(
+                          width: 320,
+                          height: 244,
+                          child: SingleChildScrollView(child: Text(currentTourPoint.description!, style: Theme.of(context).textTheme.bodySmall)),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  AppContainer(
+                    padding: const EdgeInsets.all(10),
+                    height: 140,
+                    child: Scrollbar(
+                      child: ListView.builder(
+                        itemCount: currentTourPoint.areas.length,
+                        itemBuilder: (context, index) {
+                          final area = currentTourPoint.areas[index];
+                          final isSelected = state.selectedAreaId == area.id;
+                          return _areaTab(isSelected, area, index, currentTourPoint);
+                        },
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(height: 10),
+                  // Container(
+                  //   width: 320,
+                  //   height: 180,
+                  //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: Colors.grey[200]),
+                  // ),
+                  AppContainer(child: ImageNetwork(imageUrl: currentTourPoint.imageUrl, width: 320, height: 180, borderRadius: 8.0)),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },

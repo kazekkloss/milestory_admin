@@ -46,7 +46,7 @@ class _TourListState extends State<TourList> {
     return BlocBuilder<TourManagementBloc, TourManagementState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.only(left: 0, right: 0, bottom: 0),
+          padding: const EdgeInsets.only(left: 5, right: 5, bottom: 10),
           child: AppContainer(
             child: Column(
               children: [
