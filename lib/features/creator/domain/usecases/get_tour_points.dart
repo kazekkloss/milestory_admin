@@ -1,5 +1,4 @@
 import 'package:injectable/injectable.dart';
-import '../../../../core/core_export.dart';
 import '../../creator_export.dart';
 
 @lazySingleton

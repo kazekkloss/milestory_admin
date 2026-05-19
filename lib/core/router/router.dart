@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart';
-import 'package:milestory_crm/features/auth/presentation/screen/auth_page.dart';
-import 'package:milestory_crm/features/home/home.dart';
-import 'package:milestory_crm/features/user_management/presentation/screen/user_page.dart';
-import 'package:milestory_crm/features/tour_management/tour_managenent_export.dart';
+import 'package:milestory_admin/features/auth/presentation/screen/auth_screen.dart';
+import 'package:milestory_admin/features/home/presentation/screen/home.dart';
+import 'package:milestory_admin/features/tour/tour_export.dart';
 
-import '../../features/creator/creator_export.dart';
-import '../../features/guide_application_management/guide_application_export.dart';
+import '../../features/auth/auth_export.dart';
+import '../../features/auth/presentation/screen/splash_screen.dart';
+import '../../features/creator/presentation/screen/creator_page.dart';
+import '../../features/guide_user/guide_user_export.dart';
 import '../core_export.dart';
 import '../utils/widgets/nav_bar.dart';
 
@@ -18,39 +18,73 @@ class AppRouter {
   AppRouter({required this.context});
   final _rootNavigatorKey = GlobalKey<NavigatorState>();
   final _shellNavigatorKey = GlobalKey<NavigatorState>();
-  late AuthStatus previousStatus = AuthStatus.unknown;
 
   final tabs = const [
-    NavBarItem(initialLocation: '/home', icon: Icon(FontAwesomeIcons.house), label: ""),
-    NavBarItem(initialLocation: '/user_management', icon: Icon(FontAwesomeIcons.user), label: ""),
-    NavBarItem(initialLocation: '/guide_application_management', icon: Icon(FontAwesomeIcons.message), label: ""),
-    NavBarItem(initialLocation: '/tour_management', icon: Icon(FontAwesomeIcons.map), label: ""),
-    NavBarItem(initialLocation: '', icon: Icon(FontAwesomeIcons.rightFromBracket), label: ""),
+    NavBarItem(
+      initialLocation: '/home',
+      icon: FaIcon(FontAwesomeIcons.house),
+      label: "",
+    ),
+    NavBarItem(
+      initialLocation: '/dashboard',
+      icon: FaIcon(FontAwesomeIcons.gauge),
+      label: "",
+    ),
+    NavBarItem(
+      initialLocation: '/settings',
+      icon: FaIcon(FontAwesomeIcons.gear),
+      label: "",
+    ),
+    NavBarItem(
+      initialLocation: '',
+      icon: FaIcon(FontAwesomeIcons.rightFromBracket),
+      label: "",
+    ),
   ];
 
   GoRouter _router() => GoRouter(
     navigatorKey: _rootNavigatorKey,
+    initialLocation: '/splash',
     redirect: (context, state) {
-      var authState = context.read<AuthBloc>().state;
+      final authState = context.read<AuthBloc>().state;
+      final loc = state.matchedLocation;
+
+      final isSplash = loc == '/splash';
+      final isWelcome = loc == '/auth';
+
       switch (authState.status) {
         case AuthStatus.unknown:
-          return state.namedLocation(RouteConstants.auth);
+          return isSplash ? null : '/splash';
+
         case AuthStatus.unauthenticated:
-          if (previousStatus != authState.status) {
-            previousStatus = authState.status;
-            return state.namedLocation(RouteConstants.auth);
-          }
+          return isWelcome ? null : '/auth';
+
         case AuthStatus.authenticated:
-          if (previousStatus != authState.status) {
-            previousStatus = authState.status;
-            return state.namedLocation(RouteConstants.home);
-          }
+          if (isSplash || isWelcome) return '/home';
+          return null;
       }
-      return null;
     },
-    refreshListenable: RouterRefreshBloc<AuthBloc, AuthState>(BlocProvider.of<AuthBloc>(context, listen: false)),
+    refreshListenable: RouterRefreshMultiBloc([
+      RouterRefreshBloc<AuthBloc, AuthState>(
+        BlocProvider.of<AuthBloc>(context, listen: false),
+      ),
+      RouterRefreshBloc<GuideUserBloc, GuideUserState>(
+        BlocProvider.of<GuideUserBloc>(context, listen: false),
+      ),
+    ]),
     routes: [
-      GoRoute(parentNavigatorKey: _rootNavigatorKey, name: RouteConstants.auth, path: '/auth', builder: (context, state) => const AuthPage()),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        name: RouteConstants.splash,
+        path: '/splash',
+        builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        name: RouteConstants.auth,
+        path: '/auth',
+        builder: (context, state) => const AuthScreen(),
+      ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -60,33 +94,46 @@ class AppRouter {
           GoRoute(
             name: RouteConstants.home,
             path: '/home',
-            pageBuilder: (context, state) => NoTransitionPage(child: const HomePage(), key: state.pageKey),
+            pageBuilder:
+                (context, state) => NoTransitionPage(
+                  child: const HomeScreen(),
+                  key: state.pageKey,
+                ),
           ),
           GoRoute(
-            name: RouteConstants.userManagement,
-            path: '/user_management',
-            pageBuilder: (context, state) => NoTransitionPage(child: const UserManagementPage(), key: state.pageKey),
-          ),
-          GoRoute(
-            name: RouteConstants.guideApplication,
-            path: '/guide_application_management',
-            pageBuilder: (context, state) => NoTransitionPage(child: const GuideApplicationManagementPage(), key: state.pageKey),
-          ),
-          GoRoute(
-            name: RouteConstants.tourManagement,
-            path: '/tour_management',
-            pageBuilder: (context, state) => NoTransitionPage(child: const TourPage(), key: state.pageKey),
+            name: RouteConstants.dashboard,
+            path: '/dashboard',
+            pageBuilder: (context, state) {
+              final statusStr = state.uri.queryParameters['status'];
+              final initialStatus =
+                  statusStr != null && statusStr.isNotEmpty
+                      ? TourStatusData.fromApiString(statusStr)
+                      : null;
+              return NoTransitionPage(
+                child: TourPage(initialStatus: initialStatus),
+                key: state.pageKey,
+              );
+            },
             routes: [
               GoRoute(
                 name: RouteConstants.creator,
                 path: 'creator',
                 pageBuilder: ((context, state) {
                   Tour tour = state.extra as Tour;
-                  print("Tour ID in Router: ${tour.id}");
+                  debugPrint("Tour ID in Router: ${tour.id}");
                   return NoTransitionPage(child: CreatorPage(tour: tour));
                 }),
               ),
             ],
+          ),
+          GoRoute(
+            name: RouteConstants.settings,
+            path: '/settings',
+            pageBuilder:
+                (context, state) => NoTransitionPage(
+                  child: const SettingsScreen(),
+                  key: state.pageKey,
+                ),
           ),
         ],
       ),

@@ -1,10 +1,8 @@
 class RouteConstants {
+  static String splash = 'splash';
   static String auth = 'auth';
-
-  //dashboard
   static String home = 'home';
   static String creator = 'creator';
-  static String userManagement = 'user_management';
-  static String guideApplication = 'guide_application_management';
-  static String tourManagement = 'tour_management';
+  static String dashboard = 'dashboard';
+  static String settings = 'settings';
 }

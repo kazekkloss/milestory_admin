@@ -1,4 +1,4 @@
-# milestory_crm
+# milestory_admin
 
 A new Flutter project.
 

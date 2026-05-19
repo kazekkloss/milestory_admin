@@ -2,9 +2,11 @@ import '../core_export.dart';
 
 abstract class DataState<T> {
   final T? data;
-  final AppError? error;
+  final UiEvent? uiEvent;
 
-  const DataState({this.data, this.error});
+  const DataState({this.data, this.uiEvent});
+
+  bool? get isEmpty => null;
 }
 
 class DataSuccess<T> extends DataState<T> {
@@ -12,5 +14,5 @@ class DataSuccess<T> extends DataState<T> {
 }
 
 class DataFailed<T> extends DataState<T> {
-  const DataFailed(AppError error) : super(error: error);
+  const DataFailed(UiEvent uiEvent) : super(uiEvent: uiEvent);
 }

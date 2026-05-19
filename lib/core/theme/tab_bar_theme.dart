@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 
-import '../core_export.dart';
+import 'colors.dart';
 
 class CustomTabBarTheme {
   CustomTabBarTheme._();
 
-  static final tabBarTheme = TabBarThemeData(
-    overlayColor: WidgetStateProperty.all(Colors.transparent),
-    labelColor: Colors.white,
-    indicatorColor: Colors.white,
-    unselectedLabelColor: CustomColorScheme.customColorScheme.primary,
-    dividerHeight: 0,
-    indicatorSize: TabBarIndicatorSize.tab,
-  );
+  static TabBarThemeData build(AppColors colors) {
+    return TabBarThemeData(
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      labelColor: colors.textPrimary,
+      unselectedLabelColor: colors.textSecondary,
+      indicatorColor: colors.accent,
+      dividerHeight: 0,
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelStyle: const TextStyle(
+        fontFamily: AppColors.fontBody,
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
+      unselectedLabelStyle: const TextStyle(
+        fontFamily: AppColors.fontBody,
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
 }

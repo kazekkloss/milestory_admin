@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -12,83 +12,75 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:milestory_crm/core/core_export.dart' as _i937;
-import 'package:milestory_crm/core/network/api_client.dart' as _i415;
-import 'package:milestory_crm/core/services/token/token_manager.dart' as _i349;
-import 'package:milestory_crm/features/auth/auth_export.dart' as _i290;
-import 'package:milestory_crm/features/auth/data/datasources/auth_data_source.dart'
+import 'package:milestory_admin/core/core_export.dart' as _i937;
+import 'package:milestory_admin/core/network/api_client.dart' as _i415;
+import 'package:milestory_admin/core/services/image/image_service_impl.dart'
+    as _i557;
+import 'package:milestory_admin/core/services/token/token_manager.dart' as _i349;
+import 'package:milestory_admin/features/audio/audio_export.dart' as _i242;
+import 'package:milestory_admin/features/audio/data/datasources/audio_data_source.dart'
+    as _i281;
+import 'package:milestory_admin/features/audio/data/repository/audio_repository_impl.dart'
+    as _i199;
+import 'package:milestory_admin/features/audio/domain/usecases/get_audio_url.dart'
+    as _i368;
+import 'package:milestory_admin/features/audio/presentation/bloc/audio_bloc.dart'
+    as _i513;
+import 'package:milestory_admin/features/auth/auth_export.dart' as _i290;
+import 'package:milestory_admin/features/auth/data/datasources/auth_data_source.dart'
     as _i359;
-import 'package:milestory_crm/features/auth/data/repository/auth_repository_impl.dart'
+import 'package:milestory_admin/features/auth/data/repository/auth_repository_impl.dart'
     as _i721;
-import 'package:milestory_crm/features/auth/domain/repository/auth_repository.dart'
+import 'package:milestory_admin/features/auth/domain/repository/auth_repository.dart'
     as _i55;
-import 'package:milestory_crm/features/auth/domain/usecases/check_auth.dart'
+import 'package:milestory_admin/features/auth/domain/usecases/check_auth.dart'
     as _i580;
-import 'package:milestory_crm/features/auth/domain/usecases/logout.dart'
+import 'package:milestory_admin/features/auth/domain/usecases/delete_user.dart'
+    as _i551;
+import 'package:milestory_admin/features/auth/domain/usecases/logout.dart'
     as _i717;
-import 'package:milestory_crm/features/auth/domain/usecases/sign_in.dart'
+import 'package:milestory_admin/features/auth/domain/usecases/send_password_recovery_link.dart'
+    as _i658;
+import 'package:milestory_admin/features/auth/domain/usecases/sign_in.dart'
     as _i142;
-import 'package:milestory_crm/features/auth/presentation/auth_bloc/auth_bloc.dart'
+import 'package:milestory_admin/features/auth/presentation/auth_bloc/auth_bloc.dart'
     as _i732;
-import 'package:milestory_crm/features/creator/creator_export.dart' as _i911;
-import 'package:milestory_crm/features/creator/data/datasources/creator_data_source.dart'
+import 'package:milestory_admin/features/creator/creator_export.dart' as _i911;
+import 'package:milestory_admin/features/creator/data/datasources/creator_data_source.dart'
     as _i730;
-import 'package:milestory_crm/features/creator/data/repository/creator_repository_impl.dart'
+import 'package:milestory_admin/features/creator/data/repository/creator_repository_impl.dart'
     as _i289;
-import 'package:milestory_crm/features/creator/domain/usecases/get_tour_points.dart'
+import 'package:milestory_admin/features/creator/domain/usecases/creator_service.dart'
+    as _i681;
+import 'package:milestory_admin/features/creator/domain/usecases/get_tour_points.dart'
     as _i286;
-import 'package:milestory_crm/features/creator/presentation/creator_bloc/creator_bloc.dart'
+import 'package:milestory_admin/features/creator/presentation/creator_bloc/creator_bloc.dart'
     as _i772;
-import 'package:milestory_crm/features/guide_application_management/data/datasources/guide_application_data_sources.dart'
-    as _i641;
-import 'package:milestory_crm/features/guide_application_management/data/repository/guide_application_repository_impl.dart'
-    as _i49;
-import 'package:milestory_crm/features/guide_application_management/domain/usecases/delete_guide_application.dart'
-    as _i618;
-import 'package:milestory_crm/features/guide_application_management/domain/usecases/get_guide_applications.dart'
-    as _i506;
-import 'package:milestory_crm/features/guide_application_management/domain/usecases/set_guide.dart'
-    as _i605;
-import 'package:milestory_crm/features/guide_application_management/guide_application_export.dart'
-    as _i85;
-import 'package:milestory_crm/features/guide_application_management/presentation/guide_application_bloc/guide_application_bloc.dart'
-    as _i648;
-import 'package:milestory_crm/features/tour_management/data/datasources/tour_data_source.dart'
-    as _i20;
-import 'package:milestory_crm/features/tour_management/data/repository/tour_repository_impl.dart'
-    as _i334;
-import 'package:milestory_crm/features/tour_management/domain/usecases/delete_tour.dart'
-    as _i714;
-import 'package:milestory_crm/features/tour_management/domain/usecases/get_tours.dart'
-    as _i940;
-import 'package:milestory_crm/features/tour_management/domain/usecases/set_private_tour.dart'
-    as _i954;
-import 'package:milestory_crm/features/tour_management/domain/usecases/set_public_tour.dart'
-    as _i130;
-import 'package:milestory_crm/features/tour_management/presentation/bloc/tour_management_bloc.dart'
-    as _i326;
-import 'package:milestory_crm/features/tour_management/tour_managenent_export.dart'
-    as _i595;
-import 'package:milestory_crm/features/user_management/data/datasources/users_data_sources.dart'
-    as _i455;
-import 'package:milestory_crm/features/user_management/data/repository/users_repository_impl.dart'
-    as _i933;
-import 'package:milestory_crm/features/user_management/domain/repository/users_repository.dart'
-    as _i189;
-import 'package:milestory_crm/features/user_management/domain/usecases/delete_user.dart'
-    as _i188;
-import 'package:milestory_crm/features/user_management/domain/usecases/get_users.dart'
-    as _i353;
-import 'package:milestory_crm/features/user_management/domain/usecases/logout_user.dart'
-    as _i523;
-import 'package:milestory_crm/features/user_management/domain/usecases/search_user.dart'
-    as _i297;
-import 'package:milestory_crm/features/user_management/domain/usecases/update_user.dart'
-    as _i909;
-import 'package:milestory_crm/features/user_management/presentation/users_bloc/users_bloc.dart'
-    as _i26;
-import 'package:milestory_crm/features/user_management/users_export.dart'
-    as _i865;
+import 'package:milestory_admin/features/creator/presentation/map/map_builders.dart'
+    as _i399;
+import 'package:milestory_admin/features/guide_user/data/datasources/guide_user_data_source.dart'
+    as _i515;
+import 'package:milestory_admin/features/guide_user/data/repository/guide_user_repository_impl.dart'
+    as _i300;
+import 'package:milestory_admin/features/guide_user/domain/usecases/get_guide_user.dart'
+    as _i127;
+import 'package:milestory_admin/features/guide_user/domain/usecases/mark_onboarding_seen.dart'
+    as _i145;
+import 'package:milestory_admin/features/guide_user/domain/usecases/update_guide_user.dart'
+    as _i656;
+import 'package:milestory_admin/features/guide_user/guide_user_export.dart'
+    as _i1;
+import 'package:milestory_admin/features/guide_user/presentation/guide_user_bloc/guide_user_bloc.dart'
+    as _i315;
+import 'package:milestory_admin/features/tour/data/datasources/tour_data_source.dart'
+    as _i497;
+import 'package:milestory_admin/features/tour/data/repository/tour_repository_impl.dart'
+    as _i737;
+import 'package:milestory_admin/features/tour/domain/usecases/get_tours.dart'
+    as _i752;
+import 'package:milestory_admin/features/tour/presentation/bloc/tour_bloc.dart'
+    as _i42;
+import 'package:milestory_admin/features/tour/tour_export.dart' as _i366;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -98,34 +90,41 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.lazySingleton<_i681.CreatorService>(() => _i681.CreatorService());
+    gh.lazySingleton<_i399.MapBuilders>(() => _i399.MapBuilders());
     gh.lazySingleton<_i349.TokenManager>(
       () => _i349.TokenManager(gh<_i361.Dio>(), gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i415.ApiClient>(
       () => _i415.ApiClient(gh<_i361.Dio>(), gh<_i937.TokenManager>()),
     );
-    gh.lazySingleton<_i455.UsersDataSource>(
-      () => _i455.UsersDataSourceImpl(
-        gh<_i937.ApiClient>(),
-        gh<_i937.TokenManager>(),
-      ),
-    );
     gh.lazySingleton<_i730.CreatorDataSource>(
       () => _i730.CreatorDataSourceImpl(gh<_i937.ApiClient>()),
     );
-    gh.lazySingleton<_i20.TourDataSource>(
-      () => _i20.TourDataSourceImpl(gh<_i937.ApiClient>()),
+    gh.lazySingleton<_i515.GuideUserDataSource>(
+      () => _i515.GuideUserDataSourceImpl(gh<_i937.ApiClient>()),
     );
-    gh.lazySingleton<_i865.UsersRepository>(
-      () => _i933.UsersRepositoryImpl(
-        usersDataSource: gh<_i865.UsersDataSource>(),
+    gh.lazySingleton<_i281.AudioDataSource>(
+      () => _i281.AudioDataSourceImpl(gh<_i937.ApiClient>()),
+    );
+    gh.lazySingleton<_i1.GuideUserRepository>(
+      () => _i300.GuideUserRepositoryImpl(
+        guideUserDataSource: gh<_i1.GuideUserDataSource>(),
       ),
     );
-    gh.lazySingleton<_i641.GuideApplicationDataSource>(
-      () => _i641.UsersDataSourceImpl(
-        gh<_i937.ApiClient>(),
-        gh<_i937.TokenManager>(),
+    gh.singleton<_i242.AudioRepository>(
+      () => _i199.AudioRepositoryImpl(
+        audioDataSource: gh<_i242.AudioDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i127.GetGuideUser>(
+      () => _i127.GetGuideUser(gh<_i1.GuideUserRepository>()),
+    );
+    gh.lazySingleton<_i145.MarkOnboardingSeen>(
+      () => _i145.MarkOnboardingSeen(gh<_i1.GuideUserRepository>()),
+    );
+    gh.lazySingleton<_i497.TourDataSource>(
+      () => _i497.TourDataSourceImpl(gh<_i937.ApiClient>()),
     );
     gh.lazySingleton<_i359.AuthDataSource>(
       () => _i359.AuthDataSourceImpl(
@@ -133,25 +132,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.TokenManager>(),
       ),
     );
-    gh.lazySingleton<_i85.GuideApplicationRepository>(
-      () => _i49.GuideApplicationRepositoryImpl(
-        guideApplicationDataSource: gh<_i85.GuideApplicationDataSource>(),
+    gh.lazySingleton<_i937.ImageService>(
+      () => _i557.ImageServiceImpl(gh<_i937.ApiClient>()),
+    );
+    gh.lazySingleton<_i656.UpdateGuideUser>(
+      () => _i656.UpdateGuideUser(
+        gh<_i1.GuideUserRepository>(),
+        gh<_i937.ImageService>(),
       ),
-    );
-    gh.lazySingleton<_i353.GetUsers>(
-      () => _i353.GetUsers(gh<_i865.UsersRepository>()),
-    );
-    gh.lazySingleton<_i523.LogoutUser>(
-      () => _i523.LogoutUser(gh<_i865.UsersRepository>()),
-    );
-    gh.lazySingleton<_i188.DeleteUser>(
-      () => _i188.DeleteUser(gh<_i865.UsersRepository>()),
-    );
-    gh.lazySingleton<_i297.SearchUser>(
-      () => _i297.SearchUser(gh<_i189.UsersRepository>()),
-    );
-    gh.lazySingleton<_i909.UpdateUser>(
-      () => _i909.UpdateUser(gh<_i865.UsersRepository>()),
     );
     gh.lazySingleton<_i911.CreatorRepository>(
       () => _i289.CreatorRepositoryImpl(
@@ -161,76 +149,63 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i286.GetTourPoints>(
       () => _i286.GetTourPoints(gh<_i911.CreatorRepository>()),
     );
-    gh.lazySingleton<_i595.TourRepository>(
-      () =>
-          _i334.TourRepositoryImpl(tourDataSource: gh<_i595.TourDataSource>()),
+    gh.factory<_i368.GetAudioUrl>(
+      () => _i368.GetAudioUrl(gh<_i242.AudioRepository>()),
     );
-    gh.lazySingleton<_i55.AuthRepository>(
+    gh.factory<_i513.AudioBloc>(
+      () => _i513.AudioBloc(getAudioUrl: gh<_i242.GetAudioUrl>()),
+    );
+    gh.factory<_i315.GuideUserBloc>(
+      () => _i315.GuideUserBloc(
+        updateGuideUser: gh<_i1.UpdateGuideUser>(),
+        getGuideUser: gh<_i1.GetGuideUser>(),
+        markOnboardingSeen: gh<_i1.MarkOnboardingSeen>(),
+      ),
+    );
+    gh.lazySingleton<_i290.AuthRepository>(
       () =>
-          _i721.AuthRepositoryImpl(authDataSource: gh<_i359.AuthDataSource>()),
+          _i721.AuthRepositoryImpl(authDataSource: gh<_i290.AuthDataSource>()),
+    );
+    gh.factory<_i772.CreatorBloc>(
+      () => _i772.CreatorBloc(
+        getTourPoints: gh<_i911.GetTourPoints>(),
+        mapBuilders: gh<_i911.MapBuilders>(),
+      ),
     );
     gh.lazySingleton<_i580.CheckAuth>(
       () => _i580.CheckAuth(gh<_i55.AuthRepository>()),
     );
+    gh.lazySingleton<_i551.DeleteUser>(
+      () => _i551.DeleteUser(gh<_i55.AuthRepository>()),
+    );
     gh.lazySingleton<_i717.Logout>(
       () => _i717.Logout(gh<_i55.AuthRepository>()),
+    );
+    gh.lazySingleton<_i658.SendPasswordRecoveryLink>(
+      () => _i658.SendPasswordRecoveryLink(gh<_i55.AuthRepository>()),
     );
     gh.lazySingleton<_i142.SignIn>(
       () => _i142.SignIn(gh<_i55.AuthRepository>()),
     );
-    gh.lazySingleton<_i618.DeleteGuideApplication>(
-      () => _i618.DeleteGuideApplication(gh<_i85.GuideApplicationRepository>()),
+    gh.lazySingleton<_i366.TourRepository>(
+      () =>
+          _i737.TourRepositoryImpl(tourDataSource: gh<_i366.TourDataSource>()),
     );
-    gh.lazySingleton<_i506.GetGuideApplications>(
-      () => _i506.GetGuideApplications(gh<_i85.GuideApplicationRepository>()),
-    );
-    gh.lazySingleton<_i605.SetGuide>(
-      () => _i605.SetGuide(gh<_i85.GuideApplicationRepository>()),
-    );
-    gh.factory<_i26.UsersBloc>(
-      () => _i26.UsersBloc(
-        getUsers: gh<_i865.GetUsers>(),
-        updateUser: gh<_i865.UpdateUser>(),
-        deleteUser: gh<_i865.DeleteUser>(),
-        logoutUser: gh<_i865.LogoutUser>(),
-        searchUser: gh<_i865.SearchUser>(),
-      ),
-    );
-    gh.factory<_i648.GuideApplicationBloc>(
-      () => _i648.GuideApplicationBloc(
-        getGuideApplications: gh<_i85.GetGuideApplications>(),
-        deleteGuideApplication: gh<_i85.DeleteGuideApplication>(),
-        setGuide: gh<_i85.SetGuide>(),
-      ),
+    gh.lazySingleton<_i752.GetTours>(
+      () => _i752.GetTours(gh<_i366.TourRepository>()),
     );
     gh.factory<_i732.AuthBloc>(
       () => _i732.AuthBloc(
         signIn: gh<_i290.SignIn>(),
-        checkAuth: gh<_i290.CheckAuth>(),
         logout: gh<_i290.Logout>(),
+        checkAuth: gh<_i290.CheckAuth>(),
+        sendPasswordRecoveryLink: gh<_i290.SendPasswordRecoveryLink>(),
+        deleteUser: gh<_i290.DeleteUser>(),
       ),
     );
-    gh.factory<_i772.CreatorBloc>(
-      () => _i772.CreatorBloc(getTourPoints: gh<_i911.GetTourPoints>()),
-    );
-    gh.lazySingleton<_i130.SetPublicTour>(
-      () => _i130.SetPublicTour(gh<_i595.TourRepository>()),
-    );
-    gh.lazySingleton<_i954.SetPrivateTour>(
-      () => _i954.SetPrivateTour(gh<_i595.TourRepository>()),
-    );
-    gh.lazySingleton<_i940.GetTours>(
-      () => _i940.GetTours(gh<_i595.TourRepository>()),
-    );
-    gh.lazySingleton<_i714.DeleteTour>(
-      () => _i714.DeleteTour(gh<_i595.TourRepository>()),
-    );
-    gh.factory<_i326.TourManagementBloc>(
-      () => _i326.TourManagementBloc(
-        getTours: gh<_i595.GetTours>(),
-        deleteTour: gh<_i595.DeleteTour>(),
-        setPublicTour: gh<_i595.SetPublicTour>(),
-        setPrivateTour: gh<_i595.SetPrivateTour>(),
+    gh.factory<_i42.TourBloc>(
+      () => _i42.TourBloc(
+        getTours: gh<_i366.GetTours>(),
       ),
     );
     return this;

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,7 @@ class TokenManager {
 
   void _initializeToken() async {
     if (_appKey.isEmpty) {
-      print('Warning: APP_KEY not found in .env');
+      debugPrint('Warning: APP_KEY not found in .env');
     }
     _dio.options.headers['X-App-Key'] = _appKey;
 

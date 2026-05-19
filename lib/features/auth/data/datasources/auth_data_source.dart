@@ -1,10 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../core/core_export.dart';
+import '../../auth_export.dart';
 
 abstract class AuthDataSource {
-  Future<DataState<UserModel>> signIn({required String email, required String password});
+  Future<DataState<UserModel>> signIn(
+      {required String email, required String password});
   Future<DataState<UserModel>> checkAuth();
   Future<DataState> logout({required bool isLocal});
+  Future<DataState> sendPasswordRecoveryLink({required String email});
+  Future<DataState> deleteUser({required String userId});
 }
 
 @LazySingleton(as: AuthDataSource)
@@ -19,18 +25,19 @@ class AuthDataSourceImpl implements AuthDataSource {
     final refreshToken = responseData['refreshToken'] as String?;
 
     if (accessToken == null || refreshToken == null) {
-      throw const AppError(message: "Invalid token response from server");
+      throw const UiEvent(message: "Invalid token response from server");
     }
 
-    print("NEW ACCESS TOKEN: $accessToken");
-    print("NEW REFRESH TOKEN: $refreshToken");
+    debugPrint("NEW ACCESS TOKEN: $accessToken");
+    debugPrint("NEW REFRESH TOKEN: $refreshToken");
 
     await tokenManager.setAccessToken(accessToken);
     await tokenManager.setRefreshToken(refreshToken);
   }
 
   @override
-  Future<DataState<UserModel>> signIn({required String email, required String password}) async {
+  Future<DataState<UserModel>> signIn(
+      {required String email, required String password}) async {
     try {
       final response = await apiClient.request(
         url: ApiConstants.signIn,
@@ -41,16 +48,14 @@ class AuthDataSourceImpl implements AuthDataSource {
       if (response is DataSuccess) {
         await _saveTokens(response.data);
         final userData = response.data['user'] as Map<String, dynamic>?;
-
         final userModel = UserModel.fromJson(userData!);
-
-        print("Sign-In successful: ${userModel.email}");
+        debugPrint("Sign-In successful: ${userModel.email}");
         return DataSuccess(userModel);
       } else {
-        return DataFailed(response.error!);
+        return DataFailed(response.uiEvent!);
       }
     } catch (e) {
-      return DataFailed(AppError(message: e.toString()));
+      return DataFailed(UiEvent(message: e.toString()));
     }
   }
 
@@ -59,8 +64,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       final token = tokenManager.accessToken;
       if (token == null || token.isEmpty) {
-        print("TOKEN ============================= ${token}");
-        return const DataFailed(AppError(message: 'Token is missing'));
+        return const DataFailed(UiEvent(message: 'Token is missing'));
       }
 
       final response = await apiClient.request(
@@ -72,10 +76,28 @@ class AuthDataSourceImpl implements AuthDataSource {
         final userModel = UserModel.fromJson(response.data);
         return DataSuccess(userModel);
       } else {
-        return DataFailed(response.error!);
+        return DataFailed(response.uiEvent!);
       }
     } catch (e) {
-      return DataFailed(AppError(message: e.toString()));
+      return DataFailed(UiEvent(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<DataState> sendPasswordRecoveryLink({required String email}) async {
+    try {
+      final response = await apiClient.request(
+        url: ApiConstants.sendPasswordRecoveryLink,
+        method: RequestMethod.post,
+        data: {'email': email},
+      );
+      if (response is DataSuccess) {
+        return const DataSuccess();
+      } else {
+        return DataFailed(response.uiEvent!);
+      }
+    } catch (e) {
+      return DataFailed(UiEvent(message: e.toString()));
     }
   }
 
@@ -88,13 +110,11 @@ class AuthDataSourceImpl implements AuthDataSource {
           method: RequestMethod.delete,
         );
 
-        print("WYLOGOWYWANIE ===========================================");
         if (response is! DataSuccess) {
-          // Jeśli backend zwróci błąd, zdecyduj, co robić
-          if (response.error?.apiError?.code == 403) {
-            print("403 Forbidden during logout. Falling back to local logout...");
+          if (response.uiEvent?.httpStatus == 403) {
+            debugPrint("403 during logout, falling back to local logout");
           } else {
-            return DataFailed(response.error!);
+            return DataFailed(response.uiEvent!);
           }
         }
       }
@@ -102,7 +122,27 @@ class AuthDataSourceImpl implements AuthDataSource {
       await tokenManager.clearTokens();
       return const DataSuccess();
     } catch (e) {
-      return DataFailed(AppError(message: e.toString()));
+      return DataFailed(UiEvent(message: e.toString()));
+    }
+  }
+
+
+  @override
+  Future<DataState> deleteUser({required String userId}) async {
+    try {
+      final response = await apiClient.request(
+        url: ApiConstants.deleteUser,
+        method: RequestMethod.delete,
+        data: {'userId': userId},
+      );
+      if (response is DataSuccess) {
+        await tokenManager.clearTokens();
+        return const DataSuccess();
+      } else {
+        return DataFailed(response.uiEvent!);
+      }
+    } catch (e) {
+      return DataFailed(UiEvent(message: e.toString()));
     }
   }
 }

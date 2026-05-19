@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
-import '../../../../core/core_export.dart';
-import '../../domain/repository/auth_repository.dart';
-import '../datasources/auth_data_source.dart';
+import 'package:milestory_admin/core/response/response.dart';
+import '../../auth_export.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
@@ -10,20 +9,28 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.authDataSource});
 
   @override
-  Future<DataState<User>> signIn({required String email, required String password}) async {
-    final response = await authDataSource.signIn(email: email, password: password);
-    return response;
+  Future<DataState<User>> signIn(
+      {required String email, required String password}) async {
+    return await authDataSource.signIn(email: email, password: password);
   }
 
   @override
   Future<DataState<User>> checkAuth() async {
-    final response = await authDataSource.checkAuth();
-    return response;
+    return await authDataSource.checkAuth();
   }
 
   @override
   Future<DataState> logout({required bool isLocal}) async {
-    final response = await authDataSource.logout(isLocal: isLocal);
-    return response;
+    return await authDataSource.logout(isLocal: isLocal);
+  }
+
+  @override
+  Future<DataState> sendPasswordRecoveryLink({required String email}) async {
+    return await authDataSource.sendPasswordRecoveryLink(email: email);
+  }
+
+  @override
+  Future<DataState> deleteUser({required String userId}) async {
+    return await authDataSource.deleteUser(userId: userId);
   }
 }

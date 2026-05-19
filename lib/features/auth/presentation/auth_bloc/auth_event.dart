@@ -2,16 +2,6 @@ part of 'auth_bloc.dart';
 
 abstract class AuthEvent extends Equatable {}
 
-class SignUpEvent extends AuthEvent {
-  final String email;
-  final String password;
-
-  SignUpEvent({required this.email, required this.password});
-
-  @override
-  List<Object?> get props => [email, password];
-}
-
 class SignInEvent extends AuthEvent {
   final String email;
   final String password;
@@ -23,7 +13,6 @@ class SignInEvent extends AuthEvent {
 }
 
 class CheckAuthEvent extends AuthEvent {
-
   CheckAuthEvent();
 
   @override
@@ -36,4 +25,25 @@ class LogoutEvent extends AuthEvent {
 
   @override
   List<Object?> get props => [isLocal];
+}
+
+class UpdateStateUserEvent extends AuthEvent {
+  final User updatedUser;
+  UpdateStateUserEvent(this.updatedUser);
+
+  @override
+  List<Object?> get props => [updatedUser];
+}
+
+class SendPasswordRecoveryLinkEvent extends AuthEvent {
+  final String email;
+  SendPasswordRecoveryLinkEvent({required this.email});
+
+  @override
+  List<Object?> get props => [email];
+}
+
+class DeleteAccountEvent extends AuthEvent {
+  @override
+  List<Object?> get props => [];
 }

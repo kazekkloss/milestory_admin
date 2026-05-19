@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:milestory_crm/core/core_export.dart';
+import 'colors.dart';
 
 class CustomElevatedButtonTheme {
   CustomElevatedButtonTheme._();
 
-  static final elevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      disabledBackgroundColor: CustomColorScheme.customColorScheme.primary,
-      shadowColor: Colors.transparent,
-      foregroundColor: Colors.black,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+  static ElevatedButtonThemeData build(AppColors colors) {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: colors.accent,
+        foregroundColor: colors.bg,
+        disabledBackgroundColor: colors.accent.withValues(alpha: 0.5),
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(colors.radiusSm),
+        ),
+        elevation: 0,
+        minimumSize: const Size(0, 34),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        textStyle: const TextStyle(
+          fontFamily: AppColors.fontBody,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

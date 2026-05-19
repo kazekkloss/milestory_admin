@@ -1,6 +1,6 @@
 {
-    "name": "milestory_crm",
-    "short_name": "milestory_crm",
+    "name": "milestory_admin",
+    "short_name": "milestory_admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -10,9 +10,7 @@ enum TransportMode {
 }
 
 class TransportModeData {
-  // Lista stringów dla TransportMode
   final List<String> transportModeStrings;
-  // Lista ikon dla TransportMode
   final List<Widget> transportModeIcons;
 
   TransportModeData()
@@ -39,7 +37,6 @@ class TransportModeData {
     }
   }
 
-  // Mapowanie TransportMode na ikonę
   static Icon mapRouteEnumToIcon(TransportMode route) {
     switch (route) {
       case TransportMode.none:
@@ -57,7 +54,6 @@ class TransportModeData {
     }
   }
 
-  // Metoda do uzyskania indeksu TransportMode na podstawie stringa
   TransportMode getTransportModeFromString(String value) {
     final index = transportModeStrings.indexOf(value);
     return index != -1 ? TransportMode.values[index] : TransportMode.none;

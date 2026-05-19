@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+
 import '../../core_export.dart';
 
 class CustomDropdown extends StatelessWidget {
@@ -18,14 +19,17 @@ class CustomDropdown extends StatelessWidget {
     required this.onChanged,
     required this.descriptionText,
     this.icons,
-    this.maxWidth = 320,
+    this.maxWidth = double.infinity,
     this.hintText = 'Wybierz opcję',
   });
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+
     if (icons != null && icons!.length != items.length) {
-      throw ArgumentError('Liczba ikon (${icons!.length}) musi być równa liczbie elementów (${items.length}).');
+      throw ArgumentError(
+          'Liczba ikon (${icons!.length}) musi być równa liczbie elementów (${items.length}).');
     }
 
     return ConstrainedBox(
@@ -35,12 +39,15 @@ class CustomDropdown extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(descriptionText, style: Theme.of(context).textTheme.labelMedium),
+            Text(descriptionText,
+                style: Theme.of(context).textTheme.labelMedium),
+            const SizedBox(height: 6),
             DropdownButtonFormField2<String>(
               dropdownStyleData: DropdownStyleData(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                  borderRadius: BorderRadius.circular(15),
+                  color: c.bgCard,
+                  borderRadius: BorderRadius.circular(c.radiusMd),
+                  border: Border.all(color: c.accentBorder, width: 0.5),
                 ),
               ),
               buttonStyleData: const ButtonStyleData(
@@ -56,9 +63,12 @@ class CustomDropdown extends StatelessWidget {
               onChanged: onChanged,
               hint: Text(
                 hintText,
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
+                style: TextStyle(fontSize: 14, color: c.textMuted),
               ),
-              items: items.asMap().entries.map<DropdownMenuItem<String>>((entry) {
+              items: items
+                  .asMap()
+                  .entries
+                  .map<DropdownMenuItem<String>>((entry) {
                 final index = entry.key;
                 final value = entry.value;
                 return DropdownMenuItem<String>(
@@ -69,12 +79,12 @@ class CustomDropdown extends StatelessWidget {
                       if (icons != null && icons!.isNotEmpty) ...[
                         _buildIconWithColor(
                           icon: icons![index],
-                          color: CustomColorScheme.customColorScheme.primary,
+                          color: c.accent,
                         ),
                       ],
                       Text(
                         value,
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: c.textPrimary, fontSize: 14),
                       ),
                     ],
                   ),

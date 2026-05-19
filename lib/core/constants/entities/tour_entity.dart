@@ -5,16 +5,19 @@ import '../../core_export.dart';
 class Tour extends Equatable {
   final String? id;
   final TourStatus status;
+  final String? rejectionReason;
   final String title;
-  final int pointLength; // Assuming this is a placeholder, as it's not used in the original code
+  final int pointLength;
   final String authorId;
   final TransportMode transportMode;
   final String description;
   final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   final Uint8List? image;
   final String? imageFileName;
   final String? imageUrl;
+  final String? imageUrlToDelete;
 
   final Uint8List? audioFile;
   final String? audioFileId;
@@ -27,7 +30,9 @@ class Tour extends Equatable {
     required this.transportMode,
     required this.description,
     required this.status,
+    this.rejectionReason,
     this.createdAt,
+    this.updatedAt,
     this.audioFile,
     this.audioFileId,
     required this.pointLength,
@@ -35,6 +40,7 @@ class Tour extends Equatable {
     this.image,
     this.imageFileName,
     this.imageUrl,
+    this.imageUrlToDelete,
   });
 
   Tour copyWith({
@@ -43,11 +49,14 @@ class Tour extends Equatable {
     String? authorId,
     TransportMode? transportMode,
     TourStatus? status,
+    Object? rejectionReason = _undefined,
     String? description,
     DateTime? createdAt,
+    DateTime? updatedAt,
     Object? image = _undefined,
     Object? imageFileName = _undefined,
     Object? imageUrl = _undefined,
+    Object? imageUrlToDelete = _undefined,
     int? pointLength,
     Uint8List? audioFile,
     String? audioFileId,
@@ -59,11 +68,21 @@ class Tour extends Equatable {
       authorId: authorId ?? this.authorId,
       transportMode: transportMode ?? this.transportMode,
       status: status ?? this.status,
+      rejectionReason: rejectionReason == _undefined
+          ? this.rejectionReason
+          : rejectionReason as String?,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       image: image == _undefined ? this.image : image as Uint8List?,
-      imageFileName: imageFileName == _undefined ? this.imageFileName : imageFileName as String?,
-      imageUrl: imageUrl == _undefined ? this.imageUrl : imageUrl as String?,
+      imageFileName: imageFileName == _undefined
+          ? this.imageFileName
+          : imageFileName as String?,
+      imageUrl:
+          imageUrl == _undefined ? this.imageUrl : imageUrl as String?,
+      imageUrlToDelete: imageUrlToDelete == _undefined
+          ? this.imageUrlToDelete
+          : imageUrlToDelete as String?,
       pointLength: pointLength ?? this.pointLength,
       audioFile: audioFile ?? this.audioFile,
       audioFileId: audioFileId ?? this.audioFileId,
@@ -81,8 +100,10 @@ class Tour extends Equatable {
         transportMode,
         description,
         createdAt,
+        updatedAt,
         pointLength,
         status,
+        rejectionReason,
         audioFile,
         audioFileName,
         audioFileId,
@@ -96,7 +117,7 @@ class Tour extends Equatable {
     title: '',
     authorId: '',
     transportMode: TransportMode.none,
-    status: TourStatus.private,
+    status: TourStatus.draft,
     pointLength: 0,
     description: '',
     audioFileName: '',
