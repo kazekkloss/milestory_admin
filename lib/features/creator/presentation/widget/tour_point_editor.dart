@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../audio/audio_export.dart';
 import '../../creator_export.dart';
 
 class TourPointEditor extends StatelessWidget {
@@ -62,16 +63,27 @@ class TourPointEditor extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _SectionCard(
+                        label: 'ZDJĘCIE',
+                        child: _PhotoView(tourPoint: currentTourPoint),
+                      ),
+                      if (currentTourPoint.audioFileId != null ||
+                          currentTourPoint.audioFile != null) ...[
+                        const SizedBox(height: 16),
+                        _SectionCard(
+                          label: 'AUDIO',
+                          child: GlobalAudioPlayer(
+                            audioFileId: currentTourPoint.audioFileId,
+                            audioBytes: currentTourPoint.audioFile,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      _SectionCard(
                         label: 'OBSZARY',
                         trailingCount: currentTourPoint.areas.length,
                         child: _AreasSection(
                           currentTourPoint: currentTourPoint,
                           selectedAreaId: state.selectedAreaId,
-                          isAddingArea:
-                              state.addAreaToPointId == tourPointId,
-                          onAddArea: () => context.read<CreatorBloc>().add(
-                                AddAreaToPointEvent(tourPointId: tourPointId),
-                              ),
                           onSelectArea: (areaId) {
                             closeDirection();
                             context
@@ -139,6 +151,69 @@ class _InfoView extends StatelessWidget {
           Text('Brak opisu', style: ts.caption.copyWith(color: c.textMuted)),
         ],
       ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+// Photo view
+// ─────────────────────────────────────────────
+class _PhotoView extends StatelessWidget {
+  final TourPoint tourPoint;
+  const _PhotoView({required this.tourPoint});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final ts = AppTextStyles.of(context);
+
+    const h = 140.0;
+
+    if (tourPoint.image != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(c.radiusSm),
+        child: Image.memory(
+          tourPoint.image!,
+          width: double.infinity,
+          height: h,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    if (tourPoint.imageUrl != null && tourPoint.imageUrl!.isNotEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(c.radiusSm),
+        child: Image.network(
+          tourPoint.imageUrl!,
+          width: double.infinity,
+          height: h,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _placeholder(c, ts, h),
+        ),
+      );
+    }
+
+    return _placeholder(c, ts, h);
+  }
+
+  Widget _placeholder(AppColors c, AppTextStyles ts, double h) {
+    return Container(
+      width: double.infinity,
+      height: h,
+      decoration: BoxDecoration(
+        color: c.bgElevated,
+        borderRadius: BorderRadius.circular(c.radiusSm),
+        border: Border.all(color: c.borderSubtle, width: 0.5),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.image_outlined, size: 28, color: c.textMuted),
+          const SizedBox(height: 8),
+          Text('Brak zdjęcia', style: ts.caption.copyWith(color: c.textMuted, fontSize: 11)),
+        ],
+      ),
     );
   }
 }
@@ -260,8 +335,6 @@ class _SectionCard extends StatelessWidget {
 class _AreasSection extends StatelessWidget {
   final TourPoint currentTourPoint;
   final String? selectedAreaId;
-  final bool isAddingArea;
-  final VoidCallback onAddArea;
   final ValueChanged<String> onSelectArea;
   final ValueChanged<String> onRemoveArea;
   final ValueChanged<String> onOpenDirection;
@@ -269,8 +342,6 @@ class _AreasSection extends StatelessWidget {
   const _AreasSection({
     required this.currentTourPoint,
     required this.selectedAreaId,
-    required this.isAddingArea,
-    required this.onAddArea,
     required this.onSelectArea,
     required this.onRemoveArea,
     required this.onOpenDirection,
@@ -278,7 +349,6 @@ class _AreasSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
     final ts = AppTextStyles.of(context);
     final canRemove = currentTourPoint.areas.length > 1;
 
@@ -312,34 +382,6 @@ class _AreasSection extends StatelessWidget {
               ],
             ],
           ),
-        SizedBox(height: currentTourPoint.areas.isEmpty ? 0 : 10),
-        _AddAreaButton(active: isAddingArea, onTap: onAddArea),
-        if (isAddingArea) ...[
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: BoxDecoration(
-              color: c.accent.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(c.radiusSm),
-              border: Border.all(
-                color: c.accent.withValues(alpha: 0.25),
-                width: 0.5,
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(FontAwesomeIcons.circleInfo, size: 11, color: c.accent),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Kliknij na mapie żeby rysować obszar.',
-                    style: ts.caption.copyWith(fontSize: 11, color: c.accent),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -428,15 +470,13 @@ class _AreaRowState extends State<_AreaRow> {
                   child: Text('Obszar ${widget.index}'),
                 ),
               ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 85,
-                child: _DirectionPill(
-                  direction: widget.area.direction,
-                  isSelected: widget.isSelected,
+              if (widget.area.direction != null) ...[
+                const SizedBox(width: 8),
+                _DirectionPill(
+                  direction: widget.area.direction!,
                   onTap: widget.onOpenDirection,
                 ),
-              ),
+              ],
               const SizedBox(width: 8),
               _DeleteAreaButton(
                 enabled: widget.isSelected && widget.canRemove,
@@ -454,15 +494,10 @@ class _AreaRowState extends State<_AreaRow> {
 // Direction Pill
 // ─────────────────────────────────────────────
 class _DirectionPill extends StatefulWidget {
-  final double? direction;
-  final bool isSelected;
+  final double direction;
   final VoidCallback onTap;
 
-  const _DirectionPill({
-    required this.direction,
-    required this.isSelected,
-    required this.onTap,
-  });
+  const _DirectionPill({required this.direction, required this.onTap});
 
   @override
   State<_DirectionPill> createState() => _DirectionPillState();
@@ -473,29 +508,9 @@ class _DirectionPillState extends State<_DirectionPill> {
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
     final ts = AppTextStyles.of(context);
-    final hasDirection = widget.direction != null;
-
     const greenColor = Color(0xFF1D9E75);
-
-    final Color fg;
-    final Color bg;
-    final Color? border;
-
-    if (hasDirection) {
-      fg = greenColor;
-      bg = greenColor.withValues(alpha: _hover ? 0.22 : 0.14);
-      border = null;
-    } else if (widget.isSelected) {
-      fg = c.accent;
-      bg = c.accent.withValues(alpha: _hover ? 0.22 : 0.14);
-      border = null;
-    } else {
-      fg = c.textMuted;
-      bg = _hover ? c.bgElevated : Colors.transparent;
-      border = c.borderSubtle;
-    }
+    final bg = greenColor.withValues(alpha: _hover ? 0.22 : 0.14);
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -509,23 +524,19 @@ class _DirectionPillState extends State<_DirectionPill> {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(20),
-            border:
-                border != null ? Border.all(color: border, width: 0.5) : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              FaIcon(FontAwesomeIcons.compass, size: 10, color: fg),
+              const FaIcon(FontAwesomeIcons.compass, size: 10, color: greenColor),
               const SizedBox(width: 5),
               Text(
-                hasDirection
-                    ? '${widget.direction!.toStringAsFixed(0)}°'
-                    : 'Kierunek',
+                '${widget.direction.toStringAsFixed(0)}°',
                 style: ts.caption.copyWith(
                   fontSize: 11,
-                  color: fg,
-                  fontWeight:
-                      hasDirection ? FontWeight.w500 : FontWeight.w400,
+                  color: greenColor,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],

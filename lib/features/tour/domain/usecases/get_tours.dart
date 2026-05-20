@@ -8,10 +8,10 @@ class GetTours {
 
   GetTours(this.repository);
 
-  Future<DataState<ToursResponse>> call({int page = 1, required String userId, TourStatus? tourStatus}) async {
+  Future<DataState<ToursResponse>> call({int page = 1, int limit = 20, TourStatus? tourStatus}) async {
     return await repository.getTours(
       page: page,
-      userId: userId,
+      limit: limit,
       tourStatus: tourStatus != null ? TourStatusData.mapStatusEnumToApiString(tourStatus) : null,
     );
   }

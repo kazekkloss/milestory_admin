@@ -9,7 +9,7 @@ import 'package:milestory_admin/features/tour/tour_export.dart';
 import '../../features/auth/auth_export.dart';
 import '../../features/auth/presentation/screen/splash_screen.dart';
 import '../../features/creator/presentation/screen/creator_page.dart';
-import '../../features/guide_user/guide_user_export.dart';
+import '../../features/user_management/presentation/screen/users_screen.dart';
 import '../core_export.dart';
 import '../utils/widgets/nav_bar.dart';
 
@@ -31,8 +31,8 @@ class AppRouter {
       label: "",
     ),
     NavBarItem(
-      initialLocation: '/settings',
-      icon: FaIcon(FontAwesomeIcons.gear),
+      initialLocation: '/users',
+      icon: FaIcon(FontAwesomeIcons.users),
       label: "",
     ),
     NavBarItem(
@@ -64,14 +64,9 @@ class AppRouter {
           return null;
       }
     },
-    refreshListenable: RouterRefreshMultiBloc([
-      RouterRefreshBloc<AuthBloc, AuthState>(
-        BlocProvider.of<AuthBloc>(context, listen: false),
-      ),
-      RouterRefreshBloc<GuideUserBloc, GuideUserState>(
-        BlocProvider.of<GuideUserBloc>(context, listen: false),
-      ),
-    ]),
+    refreshListenable: RouterRefreshBloc<AuthBloc, AuthState>(
+      BlocProvider.of<AuthBloc>(context, listen: false),
+    ),
     routes: [
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
@@ -127,13 +122,12 @@ class AppRouter {
             ],
           ),
           GoRoute(
-            name: RouteConstants.settings,
-            path: '/settings',
-            pageBuilder:
-                (context, state) => NoTransitionPage(
-                  child: const SettingsScreen(),
-                  key: state.pageKey,
-                ),
+            name: RouteConstants.users,
+            path: '/users',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: const UsersScreen(),
+              key: state.pageKey,
+            ),
           ),
         ],
       ),

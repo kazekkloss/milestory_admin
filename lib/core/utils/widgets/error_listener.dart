@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:milestory_admin/features/audio/presentation/bloc/audio_bloc.dart';
 import 'package:milestory_admin/features/auth/presentation/auth_bloc/auth_bloc.dart';
 import 'package:milestory_admin/features/creator/presentation/creator_bloc/creator_bloc.dart';
-import 'package:milestory_admin/features/guide_user/presentation/guide_user_bloc/guide_user_bloc.dart';
 import 'package:milestory_admin/features/tour/presentation/bloc/tour_bloc.dart';
 
 import '../../core_export.dart';
@@ -41,15 +40,6 @@ class GlobalErrorListener extends StatelessWidget {
             final prevUiEvent = (previous as dynamic).uiEvent as UiEvent?;
             final currUiEvent = (current as dynamic).uiEvent as UiEvent?;
             return currUiEvent != null && prevUiEvent != currUiEvent;
-          },
-          listener: (context, state) => _handleUiEvent(context, state),
-        ),
-
-        // ==================== GuideUserBloc ====================
-        BlocListener<GuideUserBloc, GuideUserState>(
-          listenWhen: (previous, current) {
-            final currUiEvent = (current as dynamic).uiEvent as UiEvent?;
-            return currUiEvent != null;
           },
           listener: (context, state) => _handleUiEvent(context, state),
         ),

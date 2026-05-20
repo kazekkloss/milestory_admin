@@ -11,18 +11,16 @@ class SelectTourEvent extends TourEvent {
 }
 
 class GetToursEvent extends TourEvent {
-  final String userId;
   final int page;
   final bool isLoadMore;
   final TourStatus? tourStatus;
 
   GetToursEvent({
-    required this.userId,
     this.page = 1,
     this.isLoadMore = false,
     this.tourStatus,
   });
 
   @override
-  List<Object?> get props => [userId, page, isLoadMore, tourStatus];
+  List<Object?> get props => [page, isLoadMore, tourStatus];
 }

@@ -14,7 +14,6 @@ export 'presentation/creator_bloc/creator_bloc.dart';
 export 'presentation/widget/rotatable_arrow.dart';
 export 'presentation/screen/creator_page.dart';
 export 'presentation/widget/tour_point_editor.dart';
-export 'presentation/widget/step_back_button.dart';
 export 'presentation/widget/map_widget.dart';
 export 'presentation/widget/tour_point_list.dart';
 export 'presentation/widget/creator_top_tab.dart';

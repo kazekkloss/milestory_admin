@@ -23,18 +23,12 @@ class CreatorBloc extends Bloc<CreatorEvent, CreatorState> {
   })  : _getTourPoints = getTourPoints,
         _mapBuilders = mapBuilders,
         super(const CreatorState(
-          markers: {},
-          polylines: {},
           tourPoints: [],
           polygons: {},
           selectedAreaId: null,
         )) {
     on<MapTappedEvent>(_onMapTapped);
-    on<CreateAreaEvent>(_onCreateArea);
     on<SelectAreaEvent>(_onSelectArea);
-    on<AddAreaToPointEvent>(_onAddAreaToPoint);
-    on<DirectionEvent>(_onAddDirection);
-    on<BackStepEvent>(_onBackStep);
     on<RemoveAreaEvent>(_onRemoveArea);
 
     on<GetTourPointsEvent>(_onGetTourPoints);
@@ -58,139 +52,12 @@ class CreatorBloc extends Bloc<CreatorEvent, CreatorState> {
   }
 
   // ========================= MAP TAP =========================
-  void _onMapTapped(MapTappedEvent event, Emitter<CreatorState> emit) async {
-    try {
-      emit(state.copyWith(uiEvent: null));
-
-      final currentMarkers = state.markers.toList();
-
-      final areaId = getAreaIdIfPointInside(
-        point: event.latLng,
-        polygons: state.polygons,
-      );
-
-      if (currentMarkers.isEmpty && areaId != null) {
-        add(SelectAreaEvent(areaId: areaId));
-        return;
-      }
-
-      if (event.tourStatus == TourStatus.pendingReview) {
-        emit(state.copyWith(
-            uiEvent: const UiEvent(
-                message: "Trasa jest weryfikowana, nie można jej edytować")));
-        return;
-      }
-
-      if (areaId != null) {
-        emit(state.copyWith(
-            uiEvent: const UiEvent(
-                message: "Nie można zaczynać wewnątrz istniejącego obszaru")));
-        return;
-      }
-
-      if (!canAddSegment(
-        newPoint: event.latLng,
-        markers: currentMarkers,
-        polygons: state.polygons,
-      )) {
-        emit(state.copyWith(
-            uiEvent: const UiEvent(
-                message: "Linia nie może przecinać istniejącego obszaru")));
-        return;
-      }
-
-      if (doesSegmentIntersectCurrentDrawing(
-        newPoint: event.latLng,
-        markers: currentMarkers,
-      )) {
-        emit(state.copyWith(
-            uiEvent: const UiEvent(
-                message: "Linia nie może przecinać samej siebie")));
-        return;
-      }
-
-      final newMarker = await _mapBuilders.createMarker(
-        index: currentMarkers.length,
-        position: event.latLng,
-        isFirst: currentMarkers.isEmpty,
-        onTap: () {
-          if (state.polylines.length > 1) add(CreateAreaEvent());
-        },
-      );
-
-      final markers = {...state.markers, newMarker};
-      final polylines = Set<Polyline>.from(state.polylines);
-
-      if (markers.length > 1) {
-        polylines.add(
-          _mapBuilders.createPolyline(
-            index: polylines.length,
-            points: markers.map((m) => m.position).toList(),
-          ),
-        );
-      }
-
-      emit(state.copyWith(
-          markers: markers,
-          polylines: polylines,
-          isDrawingMode: true,
-          uiEvent: null));
-    } catch (e) {
-      emit(state.copyWith(uiEvent: UiEvent(message: e.toString())));
-    }
-  }
-
-  // ========================= CREATE AREA =========================
-  void _onCreateArea(CreateAreaEvent event, Emitter<CreatorState> emit) {
-    try {
-      final points = state.markers.map((m) => m.position).toList();
-
-      if (points.length < 3) {
-        emit(state.copyWith(
-            uiEvent: const UiEvent(
-                message: "Obszar musi mieć co najmniej 3 punkty")));
-        return;
-      }
-
-      if (doesNewAreaOverlap(
-          newPoints: points, existingPolygons: state.polygons)) {
-        emit(state.copyWith(
-            uiEvent: const UiEvent(
-                message: "Obszar nie może nakładać się na inny obszar")));
-        return;
-      }
-
-      final newArea = createArea(
-        tourPoints: state.tourPoints,
-        points: points,
-      );
-
-      final updatedTourPoints = addAreaToTourPoints(
-        tourPoints: state.tourPoints,
-        area: newArea,
-        addToPointId: state.addAreaToPointId,
-      );
-
-      final newPolygon = _mapBuilders.createPolygon(
-        area: newArea,
-        onTap: () => add(SelectAreaEvent(areaId: newArea.id)),
-        accentColor: _accentColor,
-      );
-
-      emit(state.copyWith(
-        tourPoints: updatedTourPoints,
-        polygons: {...state.polygons, newPolygon},
-        markers: {},
-        polylines: {},
-        addAreaToPointId: null,
-        isDrawingMode: false,
-        uiEvent: null,
-      ));
-
-      add(SelectAreaEvent(areaId: newArea.id));
-    } catch (e) {
-      emit(state.copyWith(uiEvent: UiEvent(message: e.toString())));
-    }
+  void _onMapTapped(MapTappedEvent event, Emitter<CreatorState> emit) {
+    final areaId = getAreaIdIfPointInside(
+      point: event.latLng,
+      polygons: state.polygons,
+    );
+    if (areaId != null) add(SelectAreaEvent(areaId: areaId));
   }
 
   // ========================= SELECT AREA =========================
@@ -248,45 +115,6 @@ class CreatorBloc extends Bloc<CreatorEvent, CreatorState> {
     }
   }
 
-  // ========================= ADD AREA TO POINT =========================
-  void _onAddAreaToPoint(AddAreaToPointEvent event, Emitter<CreatorState> emit) {
-    emit(state.copyWith(
-      addAreaToPointId: state.addAreaToPointId == event.tourPointId
-          ? null
-          : event.tourPointId,
-      uiEvent: null,
-    ));
-  }
-
-  // ========================= DIRECTION =========================
-  void _onAddDirection(DirectionEvent event, Emitter<CreatorState> emit) {
-    if (state.selectedAreaId == null) return;
-
-    final updatedTourPoints = updateAreaDirection(
-      tourPoints: state.tourPoints,
-      areaId: state.selectedAreaId!,
-      direction: event.direction,
-    );
-
-    emit(state.copyWith(tourPoints: updatedTourPoints, uiEvent: null));
-  }
-
-  // ========================= BACK STEP =========================
-  void _onBackStep(BackStepEvent event, Emitter<CreatorState> emit) {
-    final markers = List<Marker>.from(state.markers);
-    final polylines = Set<Polyline>.from(state.polylines);
-
-    if (markers.isEmpty) return;
-
-    markers.removeLast();
-    if (polylines.isNotEmpty) polylines.remove(polylines.last);
-
-    emit(state.copyWith(
-      markers: markers.toSet(),
-      polylines: polylines,
-      uiEvent: null,
-    ));
-  }
 
   // ========================= REMOVE AREA =========================
   void _onRemoveArea(RemoveAreaEvent event, Emitter<CreatorState> emit) {

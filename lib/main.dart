@@ -9,7 +9,6 @@ import 'package:milestory_admin/injection.dart' as di;
 
 import 'core/core_export.dart';
 import 'features/audio/audio_export.dart';
-import 'features/guide_user/guide_user_export.dart';
 import 'features/tour/tour_export.dart';
 
 void main() async {
@@ -41,7 +40,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => GetIt.I<AuthBloc>()),
         BlocProvider(create: (context) => GetIt.I<CreatorBloc>()),
         BlocProvider(create: (context) => GetIt.I<TourBloc>()),
-        BlocProvider(create: (context) => GetIt.I<GuideUserBloc>()),
         BlocProvider(create: (context) => GetIt.I<AudioBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(

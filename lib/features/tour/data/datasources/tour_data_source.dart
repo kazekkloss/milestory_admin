@@ -3,8 +3,7 @@ import '../../../../core/core_export.dart';
 import '../../tour_export.dart';
 
 abstract class TourDataSource {
-  Future<DataState<ToursResponse>> getTours(
-      {int page, required String userId, String? tourStatus});
+  Future<DataState<ToursResponse>> getTours({int page, int limit, String? tourStatus});
 }
 
 @LazySingleton(as: TourDataSource)
@@ -15,18 +14,18 @@ class TourDataSourceImpl implements TourDataSource {
 
   @override
   Future<DataState<ToursResponse>> getTours(
-      {int page = 1, required String userId, String? tourStatus}) async {
+      {int page = 1, int limit = 20, String? tourStatus}) async {
     try {
       final queryParams = <String, dynamic>{
-        'userId': userId,
         'page': page.toString(),
+        'limit': limit.toString(),
       };
       if (tourStatus != null) {
         queryParams['tourStatus'] = tourStatus;
       }
 
       final response = await apiClient.request(
-        url: ApiConstants.getToursByAuthorId,
+        url: ApiConstants.getAllTours,
         method: RequestMethod.get,
         queryParameters: queryParams,
       );

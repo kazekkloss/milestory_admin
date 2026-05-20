@@ -35,6 +35,18 @@ class TourState extends Equatable {
     );
   }
 
+  static const _blockingStatuses = {
+    TourStatus.draft,
+    TourStatus.pendingReview,
+    TourStatus.rejected,
+  };
+
+  Tour? get blockingTour => allTours
+      .where((t) => _blockingStatuses.contains(t.status))
+      .firstOrNull;
+
+  bool get hasActiveSlot => blockingTour != null;
+
   @override
   List<Object?> get props => [uiEvent, tours, allTours, selectedTour, stats, getToursLoading];
 }

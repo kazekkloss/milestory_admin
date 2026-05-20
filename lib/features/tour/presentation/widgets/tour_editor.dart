@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../audio/audio_export.dart';
 import '../../../creator/creator_export.dart';
 import '../../tour_export.dart';
 
@@ -135,6 +136,17 @@ class _TourInfoView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
+        if (tour.audioFileId != null && tour.audioFileId!.isNotEmpty ||
+            tour.audioFile != null) ...[
+          SectionCard(
+            label: 'AUDIO',
+            child: GlobalAudioPlayer(
+              audioFileId: tour.audioFileId,
+              audioBytes: tour.audioFile,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
         SectionCard(
           label: 'DANE TRASY',
           child: Column(
@@ -207,6 +219,7 @@ class _ActionBar extends StatelessWidget {
             label: const Text('Podgląd mapy'),
           ),
         ),
+        StatusPill(status: selectedTour.status, size: 22),
         IconActionButton(
           icon: FontAwesomeIcons.xmark,
           color: c.textSecondary,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/core_export.dart';
 import '../../../tour/tour_export.dart';
 
@@ -9,9 +10,21 @@ class NotificationsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ts = AppTextStyles.of(context);
+
     return BlocBuilder<TourBloc, TourState>(
       builder: (context, state) {
-        final notifs = _build(state.allTours);
+        final pending = (state.allTours
+            .where((t) => t.status == TourStatus.pendingReview)
+            .toList()
+          ..sort((a, b) {
+            final da = a.updatedAt;
+            final db = b.updatedAt;
+            if (da == null && db == null) return 0;
+            if (da == null) return 1;
+            if (db == null) return -1;
+            return db.compareTo(da);
+          }));
 
         return AppContainer(
           child: Column(
@@ -19,147 +32,102 @@ class NotificationsCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text('POWIADOMIENIA',
-                      style: AppTextStyles.of(context)
-                          .sectionLabel
-                          .copyWith(fontSize: 11)),
-                  if (notifs.isNotEmpty) ...[
+                  Text('DO WERYFIKACJI',
+                      style: ts.sectionLabel.copyWith(fontSize: 11)),
+                  if (pending.isNotEmpty) ...[
                     const SizedBox(width: 8),
                     NumberCircle(
-                      number: notifs.length,
-                      color: notifs.first.tour.status.color,
+                      number: pending.length,
+                      color: SemanticColors.warning,
                     ),
                   ],
                 ],
               ),
               const SizedBox(height: 14),
-              if (notifs.isEmpty)
+              if (pending.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text('Brak nowych powiadomień.',
-                      style: AppTextStyles.of(context).caption),
+                  child: Text('Brak tras oczekujących na weryfikację.',
+                      style: ts.caption),
                 )
               else
-                ...notifs.map((n) => _Item(n: n)),
+                ...pending.map((t) => _PendingItem(tour: t)),
             ],
           ),
         );
       },
     );
   }
-
-  List<_N> _build(List<Tour> tours) {
-    final r = <_N>[];
-    for (final t in tours.where((t) => t.status == TourStatus.pendingReview)) {
-      r.add(_N(
-          'Trasa ',
-          ' jest w trakcie weryfikacji. Jeśli się powiedzie zostanie ona upubliczniona.',
-          t));
-    }
-    for (final t in tours.where((t) => t.status == TourStatus.rejected)) {
-      r.add(
-          _N('Trasa ', ' została odrzucona. Sprawdź powód i popraw trasę.', t));
-    }
-    r.sort((a, b) {
-      final da = a.tour.updatedAt;
-      final db = b.tour.updatedAt;
-      if (da == null && db == null) return 0;
-      if (da == null) return 1;
-      if (db == null) return -1;
-      return db.compareTo(da);
-    });
-    return r;
-  }
 }
 
-class _N {
-  final String prefix;
-  final String suffix;
+class _PendingItem extends StatefulWidget {
   final Tour tour;
-  const _N(this.prefix, this.suffix, this.tour);
-}
-
-class _Item extends StatefulWidget {
-  final _N n;
-
-  const _Item({required this.n});
+  const _PendingItem({required this.tour});
 
   @override
-  State<_Item> createState() => _ItemState();
+  State<_PendingItem> createState() => _PendingItemState();
 }
 
-class _ItemState extends State<_Item> {
+class _PendingItemState extends State<_PendingItem> {
   bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.n.tour.status.color;
-
     final c = AppColors.of(context);
-    final narrow = SizeConfig.isNarrow(context);
+    final ts = AppTextStyles.of(context);
+    final color = SemanticColors.warning;
 
-    final icon = switch (widget.n.tour.status) {
-      TourStatus.pendingReview => Icons.access_time_outlined,
-      TourStatus.rejected => Icons.error_outline,
-      _ => Icons.info_outline,
-    };
-
-    final baseStyle = AppTextStyles.of(context).caption.copyWith(
-          color: AppColors.of(context).textSecondary,
-          fontSize: 12,
-        );
+    final date = widget.tour.updatedAt != null
+        ? DateFormat('d MMM yyyy, HH:mm', 'pl_PL').format(widget.tour.updatedAt!)
+        : '—';
 
     return MouseRegion(
-      cursor: narrow ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
-        onTap: !narrow
-            ? () => context.goNamed(
-                  RouteConstants.creator,
-                  extra: widget.n.tour,
-                )
-            : null,
+        onTap: () => context.goNamed(
+          RouteConstants.creator,
+          extra: widget.tour,
+        ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: _hovered
-                ? color.withValues(alpha: 0.20)
-                : color.withValues(alpha: 0.12),
+                ? color.withValues(alpha: 0.18)
+                : color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: _hovered ? color : color.withValues(alpha: 0.5),
+              color: _hovered ? color : color.withValues(alpha: 0.35),
               width: 0.5,
             ),
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 15, color: color),
+              Icon(Icons.access_time_outlined, size: 15, color: color),
               const SizedBox(width: 10),
               Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    style: baseStyle,
-                    children: [
-                      TextSpan(text: widget.n.prefix),
-                      TextSpan(
-                        text: widget.n.tour.title,
-                        style: TextStyle(
-                          color: c.accent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      TextSpan(text: widget.n.suffix),
-                    ],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.tour.title.isEmpty ? 'Bez tytułu' : widget.tour.title,
+                      style: ts.cardTitle.copyWith(fontSize: 13),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      date,
+                      style: ts.caption.copyWith(fontSize: 11, color: c.textMuted),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(Icons.chevron_right,
-                  size: 14, color: color.withValues(alpha: 0.6)),
+              Icon(Icons.chevron_right, size: 14, color: color.withValues(alpha: 0.6)),
             ],
           ),
         ),

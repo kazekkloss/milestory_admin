@@ -11,9 +11,6 @@ export 'domain/usecases/sign_in.dart';
 export 'domain/usecases/delete_user.dart';
 
 export 'presentation/auth_bloc/auth_bloc.dart';
-export 'presentation/widgets/info_tab.dart';
-export 'presentation/widgets/regulations_widget.dart';
-export 'presentation/widgets/animated_arrow.dart';
 export 'presentation/widgets/auth_tab.dart';
 export 'presentation/widgets/forgot_password_dialog.dart';
 export 'presentation/widgets/login_form.dart';

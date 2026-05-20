@@ -1,6 +1,6 @@
 class ApiConstants {
-  //static const String baseUrl = 'http://192.168.1.11:3000/api';
-  static const String baseUrl = 'https://milestory.pl/api';
+  static const String baseUrl = 'http://192.168.1.11:3000/api';
+  //static const String baseUrl = 'https://milestory.pl/api';
 
   static const String refreshToken = '$baseUrl/refresh-token';
   static const String platform = 'web';
@@ -16,6 +16,7 @@ class ApiConstants {
   static const String getAudioUrl = '$baseUrl/get-audio-url';
 
   // TOUR
+  static const String getAllTours = '$baseUrl/get-all-tours';
   static const String getToursByAuthorId = '$baseUrl/get-tours-by-authorId';
 
   // TOUR POINT
@@ -24,8 +25,4 @@ class ApiConstants {
   // USER
   static const String updateUser = '$baseUrl/update-user';
   static const String deleteUser = '$baseUrl/delete-user';
-
-  // GUIDE USER
-  static const String getGuideUser = '$baseUrl/get-guide-user';
-  static const String updateGuideUser = '$baseUrl/update-guide-user';
 }

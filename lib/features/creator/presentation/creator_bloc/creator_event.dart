@@ -3,25 +3,11 @@ part of 'creator_bloc.dart';
 abstract class CreatorEvent extends Equatable {}
 
 class MapTappedEvent extends CreatorEvent {
-  final String roadId;
   final LatLng latLng;
-  final TourStatus tourStatus;
-  MapTappedEvent(this.latLng, this.roadId, this.tourStatus);
+  MapTappedEvent(this.latLng);
 
   @override
-  List<Object?> get props => [roadId, latLng, tourStatus];
-}
-
-class CreateAreaEvent extends CreatorEvent {
-  CreateAreaEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class BackStepEvent extends CreatorEvent {
-  @override
-  List<Object?> get props => [];
+  List<Object?> get props => [latLng];
 }
 
 class SelectAreaEvent extends CreatorEvent {
@@ -40,28 +26,12 @@ class SelectTourPointEvent extends CreatorEvent {
   List<Object?> get props => [tourPointId];
 }
 
-class AddAreaToPointEvent extends CreatorEvent {
-  final int tourPointId;
-  AddAreaToPointEvent({required this.tourPointId});
-
-  @override
-  List<Object?> get props => [tourPointId];
-}
-
 class RemoveAreaEvent extends CreatorEvent {
   final String areaId;
   RemoveAreaEvent({required this.areaId});
 
   @override
   List<Object?> get props => [areaId];
-}
-
-class DirectionEvent extends CreatorEvent {
-  final double? direction;
-  DirectionEvent({required this.direction});
-
-  @override
-  List<Object?> get props => [direction];
 }
 
 class GetTourPointsEvent extends CreatorEvent {

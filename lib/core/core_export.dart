@@ -65,8 +65,6 @@ export 'theme/theme_cubit.dart';
 
 // services
 export 'services/token/token_manager.dart';
-export 'services/image/image_service.dart';
-export 'services/image/image_service_impl.dart';
 
 // mixins
 export 'mixins/draggable_panel_mixin.dart';

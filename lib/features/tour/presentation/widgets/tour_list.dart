@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:milestory_admin/features/auth/presentation/auth_bloc/auth_bloc.dart';
-
 import '../../../../core/core_export.dart';
 import '../../tour_export.dart';
-import 'contextual_hints.dart';
 
 class TourList extends StatefulWidget {
   final TourStatus? initialStatus;
@@ -21,10 +18,8 @@ class TourList extends StatefulWidget {
 
 class _TourListState extends State<TourList> {
   late TourBloc _tourBloc;
-  late AuthState _authState;
   int _currentPage = 1;
   TourStatus? _selectedStatus;
-  bool _hintsVisible = true;
 
   static const _filterOptions = <TourStatus?>[
     null,
@@ -47,16 +42,12 @@ class _TourListState extends State<TourList> {
   @override
   void initState() {
     super.initState();
-    _authState = context.read<AuthBloc>().state;
     _tourBloc = context.read<TourBloc>();
 
     _selectedStatus = widget.initialStatus;
     TourList.lastSelectedStatus = _selectedStatus;
 
-    _tourBloc.add(GetToursEvent(
-      userId: _authState.user.guideUserId ?? '',
-      tourStatus: _selectedStatus,
-    ));
+    _tourBloc.add(GetToursEvent(tourStatus: _selectedStatus));
   }
 
   void _applyFilter(TourStatus? status) {
@@ -66,11 +57,7 @@ class _TourListState extends State<TourList> {
       TourList.lastSelectedStatus = status;
     });
     _tourBloc.add(SelectTourEvent(tourId: null));
-    _tourBloc.add(GetToursEvent(
-      page: _currentPage,
-      tourStatus: status,
-      userId: _authState.user.guideUserId ?? '',
-    ));
+    _tourBloc.add(GetToursEvent(page: _currentPage, tourStatus: status));
   }
 
   void _loadMore() {
@@ -79,7 +66,6 @@ class _TourListState extends State<TourList> {
       page: _currentPage,
       tourStatus: _selectedStatus,
       isLoadMore: true,
-      userId: _authState.user.guideUserId ?? '',
     ));
   }
 
@@ -112,14 +98,9 @@ class _TourListState extends State<TourList> {
   @override
   Widget build(BuildContext context) {
     final narrow = SizeConfig.isNarrow(context);
-    final c = AppColors.of(context);
 
     return BlocBuilder<TourBloc, TourState>(
       builder: (context, tourState) {
-        final hasRejectionReason =
-            tourState.selectedTour?.rejectionReason?.isNotEmpty ?? false;
-        final effectiveHintsVisible =
-            !hasRejectionReason || _hintsVisible;
         final innerPad = narrow ? 16.0 : 20.0;
 
         final content = tourState.getToursLoading && tourState.tours.isEmpty
@@ -141,100 +122,24 @@ class _TourListState extends State<TourList> {
             narrow ? 16 : 20,
           ),
           child: AppContainer(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Stack(
-              fit: narrow ? StackFit.loose : StackFit.expand,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(innerPad, innerPad, innerPad, 14),
-                      child: _FilterBar(
-                        options: _filterOptions,
-                        labels: _filterLabels,
-                        selected: _selectedStatus,
-                        onSelect: _applyFilter,
-                        onRefresh: () => _applyFilter(_selectedStatus),
-                      ),
-                    ),
-                    _buildScrollArea(
-                      content: content,
-                      narrow: narrow,
-                      pad: innerPad,
-                    ),
-                    if (narrow)
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(innerPad, 8, innerPad, 0),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 200),
-                          child: effectiveHintsVisible
-                              ? _HintsOverlay(
-                                  key: const ValueKey('hints'),
-                                  selectedStatus: _selectedStatus,
-                                  rejectionReason:
-                                      tourState.selectedTour?.rejectionReason,
-                                  isVisible: effectiveHintsVisible,
-                                  onClose: () =>
-                                      setState(() => _hintsVisible = false),
-                                )
-                              : Align(
-                                  key: const ValueKey('bulb'),
-                                  alignment: Alignment.centerLeft,
-                                  child: IconActionButton(
-                                    iconSize: 20,
-                                    icon: FontAwesomeIcons.lightbulb,
-                                    color: c.accent,
-                                    tooltip: 'Pokaż wskazówki',
-                                    onTap: () =>
-                                        setState(() => _hintsVisible = true),
-                                  ),
-                                ),
-                        ),
-                      ),
-                  ],
+                Padding(
+                  padding: EdgeInsets.fromLTRB(innerPad, innerPad, innerPad, 14),
+                  child: _FilterBar(
+                    options: _filterOptions,
+                    labels: _filterLabels,
+                    selected: _selectedStatus,
+                    onSelect: _applyFilter,
+                    onRefresh: () => _applyFilter(_selectedStatus),
+                  ),
                 ),
-                if (!narrow) ...[
-                  Positioned(
-                    left: innerPad,
-                    right: innerPad,
-                    bottom: 0,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      opacity: effectiveHintsVisible ? 1.0 : 0.0,
-                      child: IgnorePointer(
-                        ignoring: !effectiveHintsVisible,
-                        child: _HintsOverlay(
-                          selectedStatus: _selectedStatus,
-                          rejectionReason:
-                              tourState.selectedTour?.rejectionReason,
-                          isVisible: effectiveHintsVisible,
-                          onClose: () =>
-                              setState(() => _hintsVisible = false),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: innerPad,
-                    bottom: 0,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      opacity: effectiveHintsVisible ? 0.0 : 1.0,
-                      child: IgnorePointer(
-                        ignoring: effectiveHintsVisible,
-                        child: IconActionButton(
-                          iconSize: 20,
-                          icon: FontAwesomeIcons.lightbulb,
-                          color: c.accent,
-                          tooltip: "Pokaż wskazówki",
-                          onTap: () => setState(() => _hintsVisible = true),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                _buildScrollArea(
+                  content: content,
+                  narrow: narrow,
+                  pad: innerPad,
+                ),
               ],
             ),
           ),
@@ -611,50 +516,3 @@ class _TourThumbnail extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Hints overlay
-// ─────────────────────────────────────────────────────────────────────────────
-class _HintsOverlay extends StatelessWidget {
-  final TourStatus? selectedStatus;
-  final bool isVisible;
-  final String? rejectionReason;
-  final VoidCallback onClose;
-
-  const _HintsOverlay({
-    super.key,
-    required this.selectedStatus,
-    required this.isVisible,
-    required this.onClose,
-    this.rejectionReason,
-  });
-
-  static Widget _transition(Widget child, Animation<double> animation) {
-    return FadeTransition(
-      opacity: animation,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.06),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
-        child: child,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
-      transitionBuilder: _transition,
-      child: rejectionReason != null
-          ? RejectedReasonPanel(
-              onClose: onClose,
-              key: const ValueKey('r'),
-              rejectionReason: rejectionReason!)
-          : ContextualHints(
-              onClose: onClose,
-              key: ValueKey(selectedStatus),
-              selectedStatus: selectedStatus),
-    );
-  }
-}

@@ -5,8 +5,7 @@ import 'package:milestory_admin/features/creator/creator_export.dart';
 
 class MapWidget extends StatefulWidget {
   final String tourId;
-  final TourStatus tourStatus;
-  const MapWidget({super.key, required this.tourId, required this.tourStatus});
+  const MapWidget({super.key, required this.tourId});
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
@@ -41,8 +40,6 @@ class _MapWidgetState extends State<MapWidget> {
         }
       },
       buildWhen: (previous, current) =>
-          previous.markers != current.markers ||
-          previous.polylines != current.polylines ||
           previous.polygons != current.polygons,
       builder: (context, state) {
         return GoogleMap(
@@ -51,8 +48,8 @@ class _MapWidgetState extends State<MapWidget> {
             zoom: 13,
           ),
           mapType: MapType.hybrid,
-          markers: state.markers,
-          polylines: state.polylines,
+          markers: const {},
+          polylines: const {},
           polygons: state.polygons,
 
           zoomControlsEnabled: false,
@@ -66,8 +63,7 @@ class _MapWidgetState extends State<MapWidget> {
             _mapController = controller;
           },
           onTap: (latLng) {
-            _creatorBloc
-                .add(MapTappedEvent(latLng, widget.tourId, widget.tourStatus));
+            _creatorBloc.add(MapTappedEvent(latLng));
           },
         );
       },

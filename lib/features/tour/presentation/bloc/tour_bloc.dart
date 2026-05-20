@@ -46,7 +46,7 @@ class TourBloc extends Bloc<TourEvent, TourState> {
       final shouldFetchStats = isUnfiltered && (_cachedStats == null || !event.isLoadMore);
 
       final response = await _getTours.call(
-          userId: event.userId, page: event.page, tourStatus: event.tourStatus);
+          page: event.page, tourStatus: event.tourStatus);
 
       if (response is DataSuccess) {
         final toursResponse = response.data!;

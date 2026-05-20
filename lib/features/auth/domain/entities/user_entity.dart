@@ -15,7 +15,7 @@ class User {
     this.guideUserId,
   });
 
-  bool get isAdmin => type == 'A';
+  bool get isAdmin => type == 'admin';
 
   User copyWith({
     String? id,

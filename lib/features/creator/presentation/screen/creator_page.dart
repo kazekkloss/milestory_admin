@@ -77,10 +77,7 @@ class _CreatorPageState extends State<CreatorPage>
                           child: Stack(
                             key: stackKey,
                             children: [
-                              MapWidget(
-                                tourId: widget.tour.id!,
-                                tourStatus: currentTourStatus,
-                              ),
+                              MapWidget(tourId: widget.tour.id!),
 
                               // Floating: rejection reason card (top left)
                               Positioned(
@@ -122,15 +119,6 @@ class _CreatorPageState extends State<CreatorPage>
                                   ),
                                 ),
                               ),
-                              // Floating: undo last marker (bottom left)
-                              Positioned(
-                                left: 20,
-                                top: 20,
-                                child: PointerInterceptor(
-                                  child: const StepBackButton(),
-                                ),
-                              ),
-
                               // Floating: direction panel (draggable)
                               if (isPanelVisible &&
                                   state.selectedTourPoint != null &&

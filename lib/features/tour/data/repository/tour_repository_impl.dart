@@ -10,9 +10,9 @@ class TourRepositoryImpl implements TourRepository {
 
   @override
   Future<DataState<ToursResponse>> getTours(
-      {int page = 1, required String userId, String? tourStatus}) async {
+      {int page = 1, int limit = 20, String? tourStatus}) async {
     final response = await tourDataSource.getTours(
-        page: page, userId: userId, tourStatus: tourStatus);
+        page: page, limit: limit, tourStatus: tourStatus);
     if (response is DataSuccess) {
       return DataSuccess(response.data!);
     }

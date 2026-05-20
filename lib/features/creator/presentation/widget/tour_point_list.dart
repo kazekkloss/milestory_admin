@@ -4,15 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../creator_export.dart';
 
-class TourPointList extends StatefulWidget {
+class TourPointList extends StatelessWidget {
   const TourPointList({super.key});
-
-  @override
-  State<TourPointList> createState() => _TourPointListState();
-}
-
-class _TourPointListState extends State<TourPointList> {
-  bool _hintsVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,165 +22,57 @@ class _TourPointListState extends State<TourPointList> {
           ),
           width: 340,
           child: state.tourPoints.isEmpty
-              ? _buildEmptyState(context)
-              : _buildList(context, state),
+              ? _buildEmptyState(context, c)
+              : _buildList(context, state, c),
         );
       },
     );
   }
 
-  // ─────────────────────────────────────────────
-  // Empty state — onboarding
-  // ─────────────────────────────────────────────
-  Widget _buildEmptyState(BuildContext context) {
-    final c = AppColors.of(context);
+  Widget _buildEmptyState(BuildContext context, AppColors c) {
     final ts = AppTextStyles.of(context);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 40),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: c.bgElevated,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: c.borderSubtle, width: 0.5),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: c.bgElevated,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: c.borderSubtle, width: 0.5),
+              ),
+              child: Icon(FontAwesomeIcons.mapPin, size: 16, color: c.textSecondary),
             ),
-            child: Icon(
-              FontAwesomeIcons.mapPin,
-              size: 16,
-              color: c.textSecondary,
+            const SizedBox(height: 16),
+            Text('Brak punktów trasy', style: ts.cardTitle.copyWith(fontSize: 14)),
+            const SizedBox(height: 6),
+            Text(
+              'Ta trasa nie ma jeszcze żadnych punktów.',
+              style: ts.caption.copyWith(fontSize: 12),
+              textAlign: TextAlign.center,
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Brak punktów trasy',
-            style: ts.cardTitle.copyWith(fontSize: 14),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Narysuj obszar na mapie żeby dodać pierwszy punkt.',
-            style: ts.caption.copyWith(fontSize: 12),
-          ),
-          const SizedBox(height: 24),
-          _buildStep(
-            context,
-            number: '1',
-            text:
-                'Kliknij dowolne miejsce na mapie — zaczniesz rysować obszar punktu',
-          ),
-          const SizedBox(height: 12),
-          _buildStep(
-            context,
-            number: '2',
-            text: 'Zamknij obszar wracając do pierwszego punktu na mapie',
-          ),
-          const SizedBox(height: 12),
-          _buildStep(
-            context,
-            number: '3',
-            text:
-                'Punkt pojawi się na tej liście — kliknij go żeby dodać tytuł, opis i audio',
-          ),
-          const SizedBox(height: 28),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: const Color(0xFF041525),
-              borderRadius: BorderRadius.circular(c.radiusMd),
-              border: Border.all(color: const Color(0xFF0D2A45), width: 0.5),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  FontAwesomeIcons.circleInfo,
-                  size: 12,
-                  color: Color(0xFF378ADD),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Trasa musi mieć co najmniej jeden punkt z przypisanym obszarem żeby można ją było opublikować.',
-                    style: ts.caption.copyWith(
-                      fontSize: 11,
-                      color: const Color(0xFF85B7EB),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildStep(
-    BuildContext context, {
-    required String number,
-    required String text,
-  }) {
-    final c = AppColors.of(context);
+  Widget _buildList(BuildContext context, CreatorState state, AppColors c) {
     final ts = AppTextStyles.of(context);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 22,
-          height: 22,
-          decoration: BoxDecoration(
-            color: c.bgElevated,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: c.borderSubtle, width: 0.5),
-          ),
-          child: Center(
-            child: Text(
-              number,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-                color: c.textPrimary,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Text(
-              text,
-              style: ts.caption.copyWith(fontSize: 12, height: 1.45),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ─────────────────────────────────────────────
-  // Points list
-  // ─────────────────────────────────────────────
-  Widget _buildList(BuildContext context, CreatorState state) {
-    final c = AppColors.of(context);
-    final ts = AppTextStyles.of(context);
-
-    final list = Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
           child: Row(
             children: [
-              Text(
-                'Punkty trasy',
-                style: ts.cardTitle.copyWith(fontSize: 13),
-              ),
+              Text('Punkty trasy', style: ts.cardTitle.copyWith(fontSize: 13)),
               const Spacer(),
               Text(
                 '${state.tourPoints.length} ${_pointsLabel(state.tourPoints.length)}',
@@ -203,80 +88,13 @@ class _TourPointListState extends State<TourPointList> {
             itemCount: state.tourPoints.length,
             itemBuilder: (context, index) {
               final tourPoint = state.tourPoints[index];
-              final isSelected =
-                  state.selectedTourPoint?.id == tourPoint.id;
+              final isSelected = state.selectedTourPoint?.id == tourPoint.id;
               return _PointTile(
                 tourPoint: tourPoint,
                 index: index,
                 isSelected: isSelected,
               );
             },
-          ),
-        ),
-      ],
-    );
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        list,
-        Positioned(
-          left: 14,
-          right: 14,
-          bottom: 14,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _hintsVisible ? 1.0 : 0.0,
-            child: IgnorePointer(
-              ignoring: !_hintsVisible,
-              child: HintsPanel(
-                onClose: () => setState(() => _hintsVisible = false),
-                items: const [
-                  HintItem(
-                    icon: FontAwesomeIcons.circleInfo,
-                    iconColor: Color(0xFF378ADD),
-                    iconBg: Color(0xFF041525),
-                    title: 'Punkt musi mieć obszar',
-                    text:
-                        'Obszar to strefa na mapie w której turysta usłyszy nagranie. Jeden punkt może mieć wiele obszarów.',
-                  ),
-                  HintItem(
-                    icon: FontAwesomeIcons.compass,
-                    iconColor: Color(0xFF1D9E75),
-                    iconBg: Color(0xFF031410),
-                    title: 'Kierunek odtwarzania',
-                    text:
-                        'Możesz ustawić z jakiego kierunku turysta musi podejść do obszaru żeby usłyszeć audio.',
-                  ),
-                  HintItem(
-                    icon: FontAwesomeIcons.circleCheck,
-                    iconColor: Color(0xFFEF9F27),
-                    iconBg: Color(0xFF2D1E00),
-                    title: 'Kropki kompletności',
-                    text:
-                        'Zielona kropka = uzupełnione. Kolejność: tytuł · opis · audio · zdjęcie (opcjonalne).',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 14,
-          bottom: 14,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _hintsVisible ? 0.0 : 1.0,
-            child: IgnorePointer(
-              ignoring: _hintsVisible,
-              child: IconActionButton(
-                iconSize: 20,
-                icon: FontAwesomeIcons.lightbulb,
-                color: c.accent,
-                tooltip: 'Pokaż wskazówki',
-                onTap: () => setState(() => _hintsVisible = true),
-              ),
-            ),
           ),
         ),
       ],
@@ -373,9 +191,7 @@ class _PointTileState extends State<_PointTile> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    hasTitle
-                        ? effectiveTitle
-                        : 'Punkt ${widget.index + 1}',
+                    hasTitle ? effectiveTitle : 'Punkt ${widget.index + 1}',
                     style: ts.cardTitle.copyWith(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
