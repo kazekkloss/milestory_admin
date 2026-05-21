@@ -1,29 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:milestory_admin/core/core_export.dart';
+import '../bloc/users_bloc.dart';
+import '../widgets/user_editor.dart';
+import '../widgets/users_list.dart';
+import '../widgets/users_top_tab.dart';
 
 class UsersScreen extends StatelessWidget {
   const UsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    final ts = AppTextStyles.of(context);
+    final narrow = SizeConfig.isNarrow(context);
 
-    return Scaffold(
-      backgroundColor: c.bg,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(FontAwesomeIcons.users, size: 32, color: c.textMuted),
-            const SizedBox(height: 16),
-            Text('Zarządzanie użytkownikami', style: ts.sectionTitle.copyWith(fontSize: 20)),
-            const SizedBox(height: 8),
-            Text('Ekran w budowie', style: ts.caption.copyWith(color: c.textMuted)),
-          ],
+    return BlocProvider.value(
+      value: context.read<UsersBloc>(),
+      child: GlobalErrorListener(
+        child: Scaffold(
+          backgroundColor: AppColors.of(context).bg,
+          body: AnimatedAppContainer(
+            child: narrow ? _narrowLayout() : _wideLayout(),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _wideLayout() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Expanded(
+          child: Column(
+            children: [
+              UsersTopTab(),
+              Expanded(child: UsersList()),
+            ],
+          ),
+        ),
+        const SizedBox(
+          width: SizeConfig.sidePanelWidth,
+          child: UserEditor(),
+        ),
+      ],
+    );
+  }
+
+  Widget _narrowLayout() {
+    return const Column(
+      children: [
+        UsersTopTab(),
+        Expanded(child: UsersList()),
+      ],
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:milestory_admin/injection.dart' as di;
 import 'core/core_export.dart';
 import 'features/audio/audio_export.dart';
 import 'features/tour/tour_export.dart';
+import 'features/user_management/presentation/bloc/users_bloc.dart';
 
 void main() async {
   try {
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => GetIt.I<CreatorBloc>()),
         BlocProvider(create: (context) => GetIt.I<TourBloc>()),
         BlocProvider(create: (context) => GetIt.I<AudioBloc>()),
+        BlocProvider(create: (context) => GetIt.I<UsersBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {

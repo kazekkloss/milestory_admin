@@ -66,6 +66,16 @@ import 'package:milestory_admin/features/tour/domain/usecases/get_tours.dart'
 import 'package:milestory_admin/features/tour/presentation/bloc/tour_bloc.dart'
     as _i867;
 import 'package:milestory_admin/features/tour/tour_export.dart' as _i213;
+import 'package:milestory_admin/features/user_management/data/datasources/users_data_source.dart'
+    as _i701;
+import 'package:milestory_admin/features/user_management/data/repository/users_repository_impl.dart'
+    as _i702;
+import 'package:milestory_admin/features/user_management/domain/repository/users_repository.dart'
+    as _i703;
+import 'package:milestory_admin/features/user_management/domain/usecases/get_users.dart'
+    as _i704;
+import 'package:milestory_admin/features/user_management/presentation/bloc/users_bloc.dart'
+    as _i705;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -159,6 +169,21 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i867.TourBloc>(
       () => _i867.TourBloc(getTours: gh<_i213.GetTours>()),
+    );
+    gh.lazySingleton<_i701.UsersDataSource>(
+      () => _i701.UsersDataSourceImpl(gh<_i263.ApiClient>()),
+    );
+    gh.lazySingleton<_i703.UsersRepository>(
+      () => _i702.UsersRepositoryImpl(gh<_i701.UsersDataSource>()),
+    );
+    gh.lazySingleton<_i704.GetUsers>(
+      () => _i704.GetUsers(gh<_i703.UsersRepository>()),
+    );
+    gh.factory<_i705.UsersBloc>(
+      () => _i705.UsersBloc(
+        getUsers: gh<_i704.GetUsers>(),
+        repository: gh<_i703.UsersRepository>(),
+      ),
     );
     return this;
   }

@@ -23,6 +23,9 @@ class ApiConstants {
   static const String getTourPoints = '$baseUrl/get-tour-points';
 
   // USER
+  static const String getUsers = '$baseUrl/get-users';
+  static const String getGuideUser = '$baseUrl/get-guide-user';
   static const String updateUser = '$baseUrl/update-user';
+  static const String logoutUser = '$baseUrl/logout-user';
   static const String deleteUser = '$baseUrl/delete-user';
 }
