@@ -5,9 +5,10 @@ abstract class UsersEvent extends Equatable {}
 class GetUsersEvent extends UsersEvent {
   final int page;
   final bool isLoadMore;
-  GetUsersEvent({this.page = 1, this.isLoadMore = false});
+  final String? query;
+  GetUsersEvent({this.page = 1, this.isLoadMore = false, this.query});
   @override
-  List<Object?> get props => [page, isLoadMore];
+  List<Object?> get props => [page, isLoadMore, query];
 }
 
 class SelectUserEvent extends UsersEvent {

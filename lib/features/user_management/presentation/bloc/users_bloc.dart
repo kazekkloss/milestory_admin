@@ -32,7 +32,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   Future<void> _onGetUsers(GetUsersEvent event, Emitter<UsersState> emit) async {
     try {
       emit(state.copyWith(uiEvent: null, loading: event.page == 1 && !event.isLoadMore));
-      final response = await _getUsers(page: event.page);
+      final response = await _getUsers(page: event.page, query: event.query);
       if (response is DataSuccess) {
         final newUsers = response.data!.users;
         final stats = response.data!.stats;

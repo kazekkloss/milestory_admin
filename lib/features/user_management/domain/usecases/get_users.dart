@@ -8,6 +8,6 @@ class GetUsers {
   final UsersRepository _repository;
   GetUsers(this._repository);
 
-  Future<DataState<UsersResponse>> call({int page = 1, int limit = 20}) =>
-      _repository.getUsers(page: page, limit: limit);
+  Future<DataState<UsersResponse>> call({int page = 1, int limit = 20, String? query}) =>
+      _repository.getUsers(page: page, limit: limit, query: query);
 }

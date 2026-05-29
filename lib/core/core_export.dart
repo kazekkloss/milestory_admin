@@ -16,6 +16,7 @@ export 'response/response.dart';
 export 'router/route_constants.dart';
 export 'router/router.dart';
 export 'router/stream_bloc.dart';
+export 'router/user_tours_args.dart';
 
 //utils
 export 'utils/ui_event_handler.dart';

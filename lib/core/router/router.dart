@@ -104,8 +104,11 @@ class AppRouter {
                   statusStr != null && statusStr.isNotEmpty
                       ? TourStatusData.fromApiString(statusStr)
                       : null;
+              final userArgs = state.extra is UserToursArgs
+                  ? state.extra as UserToursArgs
+                  : null;
               return NoTransitionPage(
-                child: TourPage(initialStatus: initialStatus),
+                child: TourPage(initialStatus: initialStatus, userArgs: userArgs),
                 key: state.pageKey,
               );
             },

@@ -11,8 +11,8 @@ class UsersRepositoryImpl implements UsersRepository {
   UsersRepositoryImpl(this._dataSource);
 
   @override
-  Future<DataState<UsersResponse>> getUsers({int page = 1, int limit = 20}) =>
-      _dataSource.getUsers(page: page, limit: limit);
+  Future<DataState<UsersResponse>> getUsers({int page = 1, int limit = 20, String? query}) =>
+      _dataSource.getUsers(page: page, limit: limit, query: query);
 
   @override
   Future<DataState<GuideUserInfo>> getGuideUser(String guideUserId) =>

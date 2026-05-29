@@ -61,6 +61,8 @@ import 'package:milestory_admin/features/tour/data/datasources/tour_data_source.
     as _i668;
 import 'package:milestory_admin/features/tour/data/repository/tour_repository_impl.dart'
     as _i64;
+import 'package:milestory_admin/features/tour/domain/usecases/change_status.dart'
+    as _i900;
 import 'package:milestory_admin/features/tour/domain/usecases/get_tours.dart'
     as _i120;
 import 'package:milestory_admin/features/tour/presentation/bloc/tour_bloc.dart'
@@ -167,8 +169,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i120.GetTours>(
       () => _i120.GetTours(gh<_i213.TourRepository>()),
     );
+    gh.lazySingleton<_i900.ChangeStatus>(
+      () => _i900.ChangeStatus(gh<_i213.TourRepository>()),
+    );
     gh.factory<_i867.TourBloc>(
-      () => _i867.TourBloc(getTours: gh<_i213.GetTours>()),
+      () => _i867.TourBloc(
+        getTours: gh<_i213.GetTours>(),
+        changeStatus: gh<_i900.ChangeStatus>(),
+      ),
     );
     gh.lazySingleton<_i701.UsersDataSource>(
       () => _i701.UsersDataSourceImpl(gh<_i263.ApiClient>()),

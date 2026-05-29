@@ -5,8 +5,9 @@ import '../../tour_export.dart';
 
 class TourPage extends StatefulWidget {
   final TourStatus? initialStatus;
+  final UserToursArgs? userArgs;
 
-  const TourPage({super.key, this.initialStatus});
+  const TourPage({super.key, this.initialStatus, this.userArgs});
 
   @override
   State<TourPage> createState() => _TourPageState();
@@ -34,9 +35,12 @@ class _TourPageState extends State<TourPage> {
         Expanded(
           child: Column(
             children: [
-              const TopTab(),
+              TopTab(userArgs: widget.userArgs),
               Expanded(
-                child: TourList(initialStatus: widget.initialStatus),
+                child: TourList(
+                  initialStatus: widget.initialStatus,
+                  userId: widget.userArgs?.guideUserId,
+                ),
               ),
             ],
           ),
@@ -54,7 +58,7 @@ class _TourPageState extends State<TourPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const TopTab(),
+          TopTab(userArgs: widget.userArgs),
           TourList(initialStatus: widget.initialStatus),
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 0, 16, 24),

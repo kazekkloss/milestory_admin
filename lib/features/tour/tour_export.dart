@@ -7,8 +7,9 @@ export 'presentation/bloc/tour_bloc.dart';
 
 export 'domain/repository/tour_repository.dart';
 export 'domain/usecases/get_tours.dart';
-export 'domain/etities/tours_response.dart';
-export 'domain/etities/tours_stats.dart';
+export 'domain/usecases/change_status.dart';
+export 'domain/entities/tours_response.dart';
+export 'domain/entities/tours_stats.dart';
 
 export 'data/datasources/tour_data_source.dart';
 export 'data/repository/tour_repository_impl.dart';

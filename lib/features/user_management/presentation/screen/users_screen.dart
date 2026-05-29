@@ -27,10 +27,10 @@ class UsersScreen extends StatelessWidget {
   }
 
   Widget _wideLayout() {
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Expanded(
+        Expanded(
           child: Column(
             children: [
               UsersTopTab(),
@@ -38,7 +38,7 @@ class UsersScreen extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(
+        SizedBox(
           width: SizeConfig.sidePanelWidth,
           child: UserEditor(),
         ),

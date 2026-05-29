@@ -6,7 +6,7 @@ import '../../domain/entities/guide_user_info.dart';
 import '../../domain/entities/users_response.dart';
 
 abstract class UsersDataSource {
-  Future<DataState<UsersResponse>> getUsers({int page, int limit});
+  Future<DataState<UsersResponse>> getUsers({int page = 1, int limit = 20, String? query});
   Future<DataState<GuideUserInfo>> getGuideUser(String guideUserId);
   Future<DataState<void>> updateUser(String userId, {String? type, bool? verify});
   Future<DataState<void>> logoutUser(String userId);
@@ -19,12 +19,21 @@ class UsersDataSourceImpl implements UsersDataSource {
   UsersDataSourceImpl(this.apiClient);
 
   @override
-  Future<DataState<UsersResponse>> getUsers({int page = 1, int limit = 20}) async {
+  Future<DataState<UsersResponse>> getUsers({int page = 1, int limit = 20, String? query}) async {
     try {
+      final String url;
+      final Map<String, String> queryParameters;
+      if (query != null && query.isNotEmpty) {
+        url = ApiConstants.getUsersByEmail;
+        queryParameters = {'query': query, 'platform': ApiConstants.platform};
+      } else {
+        url = ApiConstants.getUsers;
+        queryParameters = {'page': page.toString(), 'limit': limit.toString()};
+      }
       final response = await apiClient.request(
-        url: ApiConstants.getUsers,
+        url: url,
         method: RequestMethod.get,
-        queryParameters: {'page': page.toString(), 'limit': limit.toString()},
+        queryParameters: queryParameters,
       );
       if (response is DataSuccess) return DataSuccess(UsersResponseModel.fromJson(response.data));
       return DataFailed(response.uiEvent!);

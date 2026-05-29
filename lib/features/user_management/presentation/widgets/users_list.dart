@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,6 +17,9 @@ class UsersList extends StatefulWidget {
 
 class _UsersListState extends State<UsersList> {
   int _currentPage = 1;
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+  String _lastQuery = '';
 
   @override
   void initState() {
@@ -22,7 +27,30 @@ class _UsersListState extends State<UsersList> {
     context.read<UsersBloc>().add(GetUsersEvent());
   }
 
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearch(String query) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      final trimmed = query.trim();
+      if (trimmed == _lastQuery) return;
+      _lastQuery = trimmed;
+      setState(() => _currentPage = 1);
+      if (trimmed.isEmpty) {
+        context.read<UsersBloc>().add(GetUsersEvent());
+      } else {
+        context.read<UsersBloc>().add(GetUsersEvent(query: trimmed));
+      }
+    });
+  }
+
   void _loadMore() {
+    if (_lastQuery.isNotEmpty) return;
     setState(() => _currentPage++);
     context.read<UsersBloc>().add(
           GetUsersEvent(page: _currentPage, isLoadMore: true),
@@ -30,6 +58,9 @@ class _UsersListState extends State<UsersList> {
   }
 
   void _refresh() {
+    _debounce?.cancel();
+    _searchController.clear();
+    _lastQuery = '';
     setState(() => _currentPage = 1);
     context.read<UsersBloc>().add(GetUsersEvent());
   }
@@ -41,55 +72,63 @@ class _UsersListState extends State<UsersList> {
 
     return BlocBuilder<UsersBloc, UsersState>(
       builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            narrow ? 16 : 28,
-            24,
-            narrow ? 16 : 28,
-            narrow ? 16 : 20,
-          ),
-          child: AppContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 14),
-                  child: Row(
-                    children: [
-                      Text('Użytkownicy',
-                          style: AppTextStyles.of(context)
-                              .cardTitle
-                              .copyWith(fontSize: 13)),
-                      const Spacer(),
-                      IconActionButton(
-                        icon: FontAwesomeIcons.arrowRotateRight,
-                        color: c.textSecondary,
-                        tooltip: 'Odśwież',
-                        onTap: _refresh,
-                      ),
-                    ],
-                  ),
-                ),
-                if (state.loading && state.users.isEmpty)
-                  const SizedBox(
-                    height: 200,
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                else if (state.users.isEmpty)
-                  _EmptyState()
-                else
-                  Expanded(
-                    child: _UserTable(
-                      users: state.users,
-                      selectedId: state.selectedUser?.id,
-                      onLoadMore: _loadMore,
-                      canLoadMore: state.users.length % 20 == 0,
+          return Padding(
+            padding: EdgeInsets.fromLTRB(
+              narrow ? 16 : 28,
+              24,
+              narrow ? 16 : 28,
+              narrow ? 16 : 20,
+            ),
+            child: AppContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 14),
+                    child: Row(
+                      children: [
+                        Text('Użytkownicy',
+                            style: AppTextStyles.of(context)
+                                .cardTitle
+                                .copyWith(fontSize: 13)),
+                        const Spacer(),
+                        AppTextFormField(
+                          descriptionText: '',
+                          controller: _searchController,
+                          hintText: 'Szukaj po emailu lub ID…',
+                          onChanged: _onSearch,
+                          maxWidth: 200,
+                        ),
+                        const SizedBox(width: 10),
+                        IconActionButton(
+                          icon: FontAwesomeIcons.arrowRotateRight,
+                          color: c.textSecondary,
+                          tooltip: 'Odśwież',
+                          onTap: _refresh,
+                        ),
+                      ],
                     ),
                   ),
-              ],
+                  if (state.loading && state.users.isEmpty)
+                    const SizedBox(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (state.users.isEmpty)
+                    _EmptyState()
+                  else
+                    Expanded(
+                      child: _UserTable(
+                        users: state.users,
+                        selectedId: state.selectedUser?.id,
+                        onLoadMore: _loadMore,
+                        canLoadMore: _lastQuery.isEmpty && state.users.length % 20 == 0,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        );
+          );
       },
     );
   }
@@ -216,11 +255,11 @@ class _UserRowState extends State<_UserRow> {
 
     final Color bg;
     if (widget.isSelected) {
-      bg = c.accent.withValues(alpha: 0.10);
-    } else if (_hovered) {
       bg = c.bgInput;
+    } else if (_hovered) {
+      bg = Color.lerp(c.bgCard, c.bgInput, 0.6)!;
     } else {
-      bg = Colors.transparent;
+      bg = c.bgCard;
     }
 
     return MouseRegion(
@@ -230,15 +269,16 @@ class _UserRowState extends State<_UserRow> {
       child: GestureDetector(
         onTap: () => context.read<UsersBloc>().add(SelectUserEvent(widget.user)),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
+          duration: const Duration(milliseconds: 160),
           margin: const EdgeInsets.symmetric(vertical: 2),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(c.radiusSm),
-            border: widget.isSelected
-                ? Border.all(color: c.accent.withValues(alpha: 0.35), width: 0.5)
-                : null,
+            border: Border.all(
+              color: widget.isSelected ? c.accent : c.accentBorder,
+              width: widget.isSelected ? 1.0 : 0.5,
+            ),
           ),
           child: Row(
           children: [

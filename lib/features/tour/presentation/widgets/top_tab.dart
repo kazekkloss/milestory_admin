@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/core_export.dart';
 import '../../tour_export.dart';
 
 class TopTab extends StatelessWidget {
-  const TopTab({super.key});
+  final UserToursArgs? userArgs;
+  const TopTab({super.key, this.userArgs});
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +17,10 @@ class TopTab extends StatelessWidget {
     return BlocBuilder<TourBloc, TourState>(
       builder: (context, state) {
         final total = state.stats?.totalTours ?? state.tours.length;
-        final verifyCount = state.tours
+        final verifyCount = state.allTours
             .where((t) => t.status == TourStatus.pendingReview)
             .length;
+        final isUserView = userArgs != null;
 
         return Padding(
           padding: EdgeInsets.fromLTRB(
@@ -29,6 +32,16 @@ class TopTab extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (isUserView) ...[
+                IconActionButton(
+                  icon: Icons.arrow_back,
+                  iconSize: 16,
+                  color: AppColors.of(context).textSecondary,
+                  tooltip: 'Wróć',
+                  onTap: () => context.pop(),
+                ),
+                const SizedBox(width: 14),
+              ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,15 +52,16 @@ class TopTab extends StatelessWidget {
                       runSpacing: 8,
                       children: [
                         Text(
-                          'Panel zarządzania trasami',
+                          isUserView ? 'Trasy użytkownika' : 'Panel zarządzania trasami',
                           style: ts.sectionTitle.copyWith(fontSize: 22),
                         ),
-                        if (verifyCount > 0) _VerifyBadge(count: verifyCount),
+                        if (!isUserView && verifyCount > 0)
+                          _VerifyBadge(count: verifyCount),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Twórz, edytuj i publikuj swoje trasy audio.',
+                      isUserView ? userArgs!.displayName : 'Twórz, edytuj i publikuj swoje trasy audio.',
                       style: ts.caption,
                     ),
                   ],
@@ -84,7 +98,7 @@ class _TotalCounter extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Twoje trasy', style: ts.caption),
+          Text('Wszystkich tras', style: ts.caption),
           const SizedBox(width: 12),
           Text(
             total.toString(),

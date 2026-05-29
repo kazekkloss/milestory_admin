@@ -45,12 +45,8 @@ class TourModel extends Tour {
       status: TourStatusData.fromApiString(json['status'] ?? 'draft'),
       rejectionReason: json['rejectionReason'] as String?,
       description: json['description'] ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
-          : null,
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       audioFileId: json['audioFileId'],
       audioFileName: json['audioFileName'] ?? '',
       imageUrl: json['imageUrl'],

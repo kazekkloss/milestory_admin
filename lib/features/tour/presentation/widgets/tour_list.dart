@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,8 +9,9 @@ import '../../tour_export.dart';
 
 class TourList extends StatefulWidget {
   final TourStatus? initialStatus;
+  final String? userId;
 
-  const TourList({super.key, this.initialStatus});
+  const TourList({super.key, this.initialStatus, this.userId});
 
   static TourStatus? lastSelectedStatus;
 
@@ -20,6 +23,8 @@ class _TourListState extends State<TourList> {
   late TourBloc _tourBloc;
   int _currentPage = 1;
   TourStatus? _selectedStatus;
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   static const _filterOptions = <TourStatus?>[
     null,
@@ -43,29 +48,57 @@ class _TourListState extends State<TourList> {
   void initState() {
     super.initState();
     _tourBloc = context.read<TourBloc>();
-
     _selectedStatus = widget.initialStatus;
     TourList.lastSelectedStatus = _selectedStatus;
+    _tourBloc.add(GetToursEvent(tourStatus: _selectedStatus, userId: widget.userId));
+  }
 
-    _tourBloc.add(GetToursEvent(tourStatus: _selectedStatus));
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearch(String query) {
+    if (query.trim().isNotEmpty && _selectedStatus != null) {
+      setState(() {
+        _selectedStatus = null;
+        TourList.lastSelectedStatus = null;
+      });
+    }
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      _currentPage = 1;
+      _tourBloc.add(SelectTourEvent(tourId: null));
+      _tourBloc.add(GetToursEvent(
+        userId: widget.userId,
+        title: query.trim().isEmpty ? null : query.trim(),
+        tourStatus: query.trim().isEmpty ? _selectedStatus : null,
+      ));
+    });
   }
 
   void _applyFilter(TourStatus? status) {
+    _searchController.clear();
     setState(() {
       _selectedStatus = status;
       _currentPage = 1;
       TourList.lastSelectedStatus = status;
     });
     _tourBloc.add(SelectTourEvent(tourId: null));
-    _tourBloc.add(GetToursEvent(page: _currentPage, tourStatus: status));
+    _tourBloc.add(GetToursEvent(page: _currentPage, tourStatus: status, userId: widget.userId));
   }
 
   void _loadMore() {
     setState(() => _currentPage++);
+    final query = _searchController.text.trim();
     _tourBloc.add(GetToursEvent(
       page: _currentPage,
       tourStatus: _selectedStatus,
       isLoadMore: true,
+      userId: widget.userId,
+      title: query.isEmpty ? null : query,
     ));
   }
 
@@ -76,14 +109,12 @@ class _TourListState extends State<TourList> {
   }) {
     final switcher = AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
-      layoutBuilder: (current, previous) => Stack(
-        alignment: Alignment.topCenter,
-        children: [...previous, if (current != null) current],
-      ),
-      child: KeyedSubtree(
-        key: ValueKey(_selectedStatus),
-        child: content,
-      ),
+      layoutBuilder:
+          (current, previous) => Stack(
+            alignment: Alignment.topCenter,
+            children: [...previous, if (current != null) current],
+          ),
+      child: KeyedSubtree(key: ValueKey(_selectedStatus), child: content),
     );
 
     if (narrow) {
@@ -103,16 +134,17 @@ class _TourListState extends State<TourList> {
       builder: (context, tourState) {
         final innerPad = narrow ? 16.0 : 20.0;
 
-        final content = tourState.getToursLoading && tourState.tours.isEmpty
-            ? const SizedBox(
-                height: 200,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : _TourScrollView(
-                state: tourState,
-                onLoadMore: _loadMore,
-                shrinkWrap: narrow,
-              );
+        final content =
+            tourState.getToursLoading && tourState.tours.isEmpty
+                ? const SizedBox(
+                  height: 200,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+                : _TourScrollView(
+                  state: tourState,
+                  onLoadMore: _loadMore,
+                  shrinkWrap: narrow,
+                );
 
         return Padding(
           padding: EdgeInsets.fromLTRB(
@@ -122,17 +154,25 @@ class _TourListState extends State<TourList> {
             narrow ? 16 : 20,
           ),
           child: AppContainer(
+            padding: const EdgeInsets.only(bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(innerPad, innerPad, innerPad, 14),
+                  padding: EdgeInsets.fromLTRB(
+                    innerPad,
+                    innerPad,
+                    innerPad,
+                    14,
+                  ),
                   child: _FilterBar(
                     options: _filterOptions,
                     labels: _filterLabels,
                     selected: _selectedStatus,
                     onSelect: _applyFilter,
                     onRefresh: () => _applyFilter(_selectedStatus),
+                    searchController: _searchController,
+                    onSearch: _onSearch,
                   ),
                 ),
                 _buildScrollArea(
@@ -158,6 +198,8 @@ class _FilterBar extends StatelessWidget {
   final TourStatus? selected;
   final ValueChanged<TourStatus?> onSelect;
   final VoidCallback onRefresh;
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearch;
 
   const _FilterBar({
     required this.options,
@@ -165,6 +207,8 @@ class _FilterBar extends StatelessWidget {
     required this.selected,
     required this.onSelect,
     required this.onRefresh,
+    required this.searchController,
+    required this.onSearch,
   });
 
   @override
@@ -190,6 +234,14 @@ class _FilterBar extends StatelessWidget {
               ],
             ),
           ),
+        ),
+        const SizedBox(width: 8),
+        AppTextFormField(
+          descriptionText: '',
+          controller: searchController,
+          hintText: 'Szukaj trasy…',
+          onChanged: onSearch,
+          maxWidth: 200,
         ),
         const SizedBox(width: 8),
         IconActionButton(
@@ -226,19 +278,14 @@ class _EmptyList extends StatelessWidget {
               borderRadius: BorderRadius.circular(c.radiusMd),
               border: Border.all(color: c.borderSubtle, width: 0.5),
             ),
-            child:
-                Icon(FontAwesomeIcons.route, size: 20, color: c.textSecondary),
+            child: Icon(
+              FontAwesomeIcons.route,
+              size: 20,
+              color: c.textSecondary,
+            ),
           ),
           const SizedBox(height: 14),
           Text('Brak tras', style: ts.cardTitle.copyWith(fontSize: 14)),
-          const SizedBox(height: 4),
-          Text(
-            SizeConfig.isNarrow(context)
-                ? 'Dodaj pierwszą trasę w edytorze poniżej.'
-                : 'Dodaj pierwszą trasę w edytorze po prawej.',
-            style: ts.caption,
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );
@@ -335,9 +382,13 @@ class _TourRow extends StatelessWidget {
         children: [
           for (int i = 0; i < cross; i++) ...[
             Expanded(
-              child: i < tours.length
-                  ? TourTab(tour: tours[i], selected: tours[i].id == selectedId)
-                  : const SizedBox.shrink(),
+              child:
+                  i < tours.length
+                      ? TourTab(
+                        tour: tours[i],
+                        selected: tours[i].id == selectedId,
+                      )
+                      : const SizedBox.shrink(),
             ),
             if (i < cross - 1) const SizedBox(width: 8),
           ],
@@ -391,9 +442,10 @@ class _TourTabState extends State<TourTab> {
     final c = AppColors.of(context);
     final ts = AppTextStyles.of(context);
 
-    final formattedDate = widget.tour.createdAt != null
-        ? DateFormat('d MMM yyyy', 'pl_PL').format(widget.tour.createdAt!)
-        : '—';
+    final formattedDate =
+        widget.tour.createdAt != null
+            ? DateFormat('d MMM yyyy', 'pl_PL').format(widget.tour.createdAt!)
+            : '—';
 
     final Color bgColor;
     if (widget.selected) {
@@ -409,9 +461,10 @@ class _TourTabState extends State<TourTab> {
       onExit: (_) => setState(() => _hovering = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => context
-            .read<TourBloc>()
-            .add(SelectTourEvent(tourId: widget.tour.id!)),
+        onTap:
+            () => context.read<TourBloc>().add(
+              SelectTourEvent(tourId: widget.tour.id!),
+            ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -443,9 +496,10 @@ class _TourTabState extends State<TourTab> {
                         fontSize: 13,
                         fontWeight:
                             widget.selected ? FontWeight.w600 : FontWeight.w500,
-                        color: (widget.selected || _hovering)
-                            ? c.accent
-                            : c.textPrimary,
+                        color:
+                            (widget.selected || _hovering)
+                                ? c.accent
+                                : c.textPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -515,4 +569,3 @@ class _TourThumbnail extends StatelessWidget {
     );
   }
 }
-

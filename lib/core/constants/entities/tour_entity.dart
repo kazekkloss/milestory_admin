@@ -78,8 +78,7 @@ class Tour extends Equatable {
       imageFileName: imageFileName == _undefined
           ? this.imageFileName
           : imageFileName as String?,
-      imageUrl:
-          imageUrl == _undefined ? this.imageUrl : imageUrl as String?,
+      imageUrl: imageUrl == _undefined ? this.imageUrl : imageUrl as String?,
       imageUrlToDelete: imageUrlToDelete == _undefined
           ? this.imageUrlToDelete
           : imageUrlToDelete as String?,

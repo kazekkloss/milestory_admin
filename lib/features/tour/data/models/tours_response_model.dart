@@ -7,8 +7,16 @@ class ToursResponseModel extends ToursResponse {
 
   factory ToursResponseModel.fromJson(Map<String, dynamic> json) {
     final toursList = (json['tours'] as List).map((tour) => TourModel.fromJson(tour)).toList();
-    final stats = ToursStatsModel.fromJson(json['stats']);
+    final statsJson = json['stats'];
+    final stats = statsJson != null
+        ? ToursStatsModel.fromJson(statsJson as Map<String, dynamic>)
+        : ToursStatsModel(totalTours: toursList.length);
     return ToursResponseModel(tours: toursList, stats: stats);
+  }
+
+  factory ToursResponseModel.fromList(List<dynamic> list) {
+    final toursList = list.map((tour) => TourModel.fromJson(tour as Map<String, dynamic>)).toList();
+    return ToursResponseModel(tours: toursList, stats: ToursStatsModel(totalTours: toursList.length));
   }
 
   static ToursResponse toEntity(ToursResponseModel responseModel) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:milestory_admin/core/core_export.dart';
 import '../bloc/users_bloc.dart';
 
@@ -55,6 +56,8 @@ class UserEditor extends StatelessWidget {
                         loading: state.guideUserLoading,
                         hasGuideId: user.guideUserId != null && user.guideUserId!.isNotEmpty,
                       ),
+                      const SizedBox(height: 16),
+                      _ToursButton(user: user, guideUser: state.guideUser),
                       const SizedBox(height: 16),
                       _ActionsSection(user: user, actionLoading: state.actionLoading),
                     ],
@@ -298,6 +301,76 @@ class _Avatar extends StatelessWidget {
         border: Border.all(color: c.borderSubtle, width: 0.5),
       ),
       child: Icon(FontAwesomeIcons.user, size: 18, color: c.textMuted),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+// Przycisk tras użytkownika
+// ─────────────────────────────────────────────
+class _ToursButton extends StatefulWidget {
+  final dynamic user;
+  final dynamic guideUser;
+  const _ToursButton({required this.user, required this.guideUser});
+
+  @override
+  State<_ToursButton> createState() => _ToursButtonState();
+}
+
+class _ToursButtonState extends State<_ToursButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final ts = AppTextStyles.of(context);
+    final name = (widget.guideUser?.name?.isNotEmpty == true)
+        ? widget.guideUser!.name as String
+        : widget.user.email as String;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: () => context.goNamed(
+          RouteConstants.dashboard,
+          extra: UserToursArgs(
+            displayName: name,
+            guideUserId: widget.user.guideUserId as String?,
+          ),
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: _hovered ? c.accent.withValues(alpha: 0.12) : c.bgElevated,
+            borderRadius: BorderRadius.circular(c.radiusSm),
+            border: Border.all(
+              color: _hovered ? c.accent.withValues(alpha: 0.4) : c.borderSubtle,
+              width: 0.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              FaIcon(FontAwesomeIcons.route, size: 12, color: c.accent),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Trasy użytkownika',
+                  style: ts.caption.copyWith(
+                    fontSize: 12,
+                    color: c.accent,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 14, color: c.accent.withValues(alpha: 0.6)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

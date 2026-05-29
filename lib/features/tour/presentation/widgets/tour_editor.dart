@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -186,6 +187,32 @@ class _TourInfoView extends StatelessWidget {
                   style: ts.caption.copyWith(color: c.textSecondary, height: 1.55),
                 ),
               ],
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Owner ID: ${tour.authorId}',
+                      style: ts.caption.copyWith(
+                        fontSize: 10,
+                        color: c.textMuted,
+                        fontFamily: 'monospace',
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  IconActionButton(
+                    icon: FontAwesomeIcons.copy,
+                    iconSize: 11,
+                    color: c.textMuted,
+                    tooltip: 'Kopiuj ID',
+                    onTap: () => Clipboard.setData(
+                      ClipboardData(text: tour.authorId),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

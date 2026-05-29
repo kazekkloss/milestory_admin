@@ -18,12 +18,15 @@ class ApiConstants {
   // TOUR
   static const String getAllTours = '$baseUrl/get-all-tours';
   static const String getToursByAuthorId = '$baseUrl/get-tours-by-authorId';
+  static const String getToursByTitle = '$baseUrl/get-tours-by-title';
+  static const String tourBase = '$baseUrl/tour';
 
   // TOUR POINT
   static const String getTourPoints = '$baseUrl/get-tour-points';
 
   // USER
   static const String getUsers = '$baseUrl/get-users';
+  static const String getUsersByEmail = '$baseUrl/get-users-by-email';
   static const String getGuideUser = '$baseUrl/get-guide-user';
   static const String updateUser = '$baseUrl/update-user';
   static const String logoutUser = '$baseUrl/logout-user';
